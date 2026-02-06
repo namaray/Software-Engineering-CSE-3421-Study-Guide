@@ -11,6 +11,7 @@
             --text-color: #333;
             --accent-color: #f39c12; /* Orange/Gold */
             --light-accent: #fcf3cf; /* Pale Yellow */
+            --border-color: #ccc;
         }
 
         body {
@@ -22,7 +23,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             padding: 40px;
@@ -41,20 +42,60 @@
         .back-link:hover { color: var(--accent-color); }
 
         h1 { font-size: 2.5rem; margin-bottom: 10px; color: #2c3e50; }
-        h2 { font-size: 1.8rem; margin-top: 40px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { 
+            font-size: 1.8rem; 
+            margin-top: 50px; 
+            margin-bottom: 20px; 
+            color: #2c3e50; 
+            border-bottom: 2px solid #eee; 
+            padding-bottom: 10px; 
+        }
         h3 { font-size: 1.3rem; margin-top: 25px; margin-bottom: 10px; color: var(--accent-color); }
         
         p { margin-bottom: 15px; }
         ul, ol { margin-bottom: 20px; margin-left: 20px; }
         li { margin-bottom: 8px; }
 
-        /* Highlight Box for Definitions */
+        /* Highlight Box */
         .highlight-box {
             background-color: var(--light-accent);
             border-left: 4px solid var(--accent-color);
             padding: 15px;
             margin: 20px 0;
             border-radius: 4px;
+        }
+
+        /* --- TIER DIAGRAM STYLES --- */
+        .tier-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fafafa;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .tier-box {
+            background: white;
+            border: 2px solid #2c3e50;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 140px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tier-box strong { display: block; color: var(--accent-color); margin-bottom: 5px; }
+        .tier-box span { font-size: 0.85rem; color: #7f8c8d; }
+
+        .tier-arrow {
+            font-size: 1.5rem;
+            color: #999;
+            font-weight: bold;
         }
 
         /* Comparison Tables */
@@ -72,148 +113,172 @@
         }
         .comp-table th { background-color: #f9f9f9; color: #2c3e50; }
 
-        /* Component Cards */
-        .component-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .component-card {
-            background: #fafafa;
-            border: 1px solid #eee;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .component-card strong { color: var(--accent-color); display: block; margin-bottom: 5px; }
-
     </style>
 </head>
 <body>
 
     <div class="container">
-        <a href="index.html" class="back-link">← Back to Index</a>
+        <a href="index.html" class="back-link">← Back to Syllabus Index</a>
         
         <h1>Software Architecture</h1>
-        <p><strong>Course:</strong> CSE 3421 | <strong>Topic:</strong> Modularization & Distribution</p>
+        <p><strong>Course:</strong> CSE 3421 | <strong>Core Concept:</strong> Modularization & Distribution</p>
         <hr>
 
-        <!-- SECTION 1 -->
-        <h2>1. N-Tier (Layered) Architecture</h2>
-        <p>An approach where the program is distributed among <strong>N</strong> separate computers in a distributed network. It helps modularize software into manageable pieces.</p>
-
+        <!-- SECTION 1: DEFINITIONS -->
+        <h2>1. N-Tier Architecture Overview</h2>
         <div class="highlight-box">
-            <strong>Impacts of Multi-Tiering:</strong>
-            <ul>
-                <li>Scalability (Easier to grow)</li>
-                <li>Reliability & Fault Tolerance</li>
-                <li>Security</li>
-                <li>Maintainability & Reusability</li>
-            </ul>
+            <p><strong>Definition:</strong> An approach where the project/program is distributed among <strong>N</strong> separate computers in a distributed network.</p>
+            <p><strong>Why use it?</strong> To divide software into manageable pieces.</p>
         </div>
 
-        <h3>The 3 Main Tiers</h3>
-        <div class="component-grid">
-            <div class="component-card">
-                <strong>1. Presentation Tier</strong>
-                The User Interface (UI). Translates tasks and results into something the user can understand.
+        <h3>The 3 Logical Layers</h3>
+        <ul>
+            <li><strong>Presentation Layer (UI):</strong> The top-most level. Translates tasks/results for the user (The Interface).</li>
+            <li><strong>Business Logic Layer:</strong> The coordinator. Makes logical decisions, performs calculations, moves data.</li>
+            <li><strong>Data Access Layer:</strong> Storage. Retrieving and saving info to the database/file system.</li>
+        </ul>
+
+        <h3>Impacts of Multi-Tiering</h3>
+        <p>Splitting systems into tiers improves: <strong>Scalability, Reliability, Fault Tolerance, Security, Maintainability, Reusability.</strong></p>
+
+        <!-- SECTION 2: TYPES OF TIERS -->
+        <h2>2. Types of N-Tier Architecture</h2>
+        <p>How we physically separate the code onto different machines.</p>
+
+        <!-- 3-TIER -->
+        <h3>A. 3-Tier Architecture (The Standard)</h3>
+        <p>The logic is separated from the client and the database. This is the most common web architecture.</p>
+        
+        <div class="tier-diagram">
+            <div class="tier-box">
+                <strong>Client Tier</strong>
+                <span>(PC / Browser)</span>
+                <br><em>UI Only</em>
             </div>
-            <div class="component-card">
-                <strong>2. Logic Tier</strong>
-                The "Brain". Coordinates commands, makes logical decisions, performs calculations, and moves data between layers.
+            <div class="tier-arrow">↔</div>
+            <div class="tier-box" style="border-color: var(--accent-color); background: #fffcf5;">
+                <strong>Application Tier</strong>
+                <span>(App Server)</span>
+                <br><em>Business Logic</em>
             </div>
-            <div class="component-card">
-                <strong>3. Data Tier</strong>
-                Storage. Information is stored and retrieved here (Database or File System).
+            <div class="tier-arrow">↔</div>
+            <div class="tier-box">
+                <strong>Database Tier</strong>
+                <span>(DB Server)</span>
+                <br><em>Data Storage</em>
             </div>
         </div>
 
-        <!-- SECTION 2 -->
-        <h2>2. MVC Pattern (Model-View-Controller)</h2>
-        <p>One of the most common layered architectural patterns. Other variations include HMVC, MVVM, and MVP.</p>
+        <!-- 2-TIER -->
+        <h3>B. 2-Tier Architecture</h3>
+        <p>The client communicates directly with the database. The business logic usually sits on the Client (Fat Client) or inside the Database (Stored Procedures).</p>
+        
+        <div class="tier-diagram">
+            <div class="tier-box">
+                <strong>Client Tier</strong>
+                <span>(Client Computer)</span>
+                <br><em>UI + Logic</em>
+            </div>
+            <div class="tier-arrow" style="width: 100px; text-align: center;">↔</div>
+            <div class="tier-box">
+                <strong>Database Tier</strong>
+                <span>(DB Server)</span>
+                <br><em>Data</em>
+            </div>
+        </div>
+
+        <!-- 1-TIER -->
+        <h3>C. 1-Tier Architecture</h3>
+        <p>Everything runs on a single machine or a simple file server shared network.</p>
+        
+        <div class="tier-diagram">
+            <div class="tier-box" style="width: 100%;">
+                <strong>1-Tier (All-in-One)</strong>
+                <br>Client + Logic + Data
+                <br><em>(e.g., Desktop App, File Server)</em>
+            </div>
+        </div>
+
+        <!-- SECTION 3: ARCHITECTURAL PATTERNS -->
+        <h2>3. Architectural Patterns</h2>
+        
+        <h3>MVC (Model-View-Controller)</h3>
+        <p>A specific pattern for the <strong>Presentation/Logic</strong> separation.</p>
+        <table class="comp-table">
+            <tr>
+                <th>Component</th>
+                <th>Function</th>
+            </tr>
+            <tr>
+                <td><strong>Model</strong></td>
+                <td>Data-related logic. Represents data transferring between View and Controller.</td>
+            </tr>
+            <tr>
+                <td><strong>View</strong></td>
+                <td>UI logic. Text boxes, dropdowns, final output.</td>
+            </tr>
+            <tr>
+                <td><strong>Controller</strong></td>
+                <td>Interface. Processes business logic, handles requests, manipulates Model.</td>
+            </tr>
+        </table>
+        <p><strong>Frameworks:</strong> Spring (Java), Django (Python), Laravel (PHP).</p>
+
+        <!-- SECTION 4: MONOLITHIC VS MICROSERVICES -->
+        <h2>4. Monolithic vs. Microservices</h2>
 
         <table class="comp-table">
             <thead>
                 <tr>
-                    <th style="width: 20%;">Component</th>
-                    <th>Function</th>
+                    <th>Monolithic</th>
+                    <th>Microservices</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Model</strong></td>
-                    <td>Handles <strong>Data Logic</strong>. Represents the data being transferred between View and Controller.</td>
+                    <td>Built as a <strong>single, indivisible unit</strong>.</td>
+                    <td>Collection of <strong>small, independent units</strong>.</td>
                 </tr>
                 <tr>
-                    <td><strong>View</strong></td>
-                    <td>Handles <strong>UI Logic</strong>. The visible parts (text boxes, dropdowns, final output).</td>
+                    <td><strong>Tight Coupling:</strong> Hard to change one part without affecting others.</td>
+                    <td><strong>Low Coupling:</strong> Services talk via APIs (HTTP).</td>
                 </tr>
                 <tr>
-                    <td><strong>Controller</strong></td>
-                    <td>The <strong>Interface</strong>. Processes business logic, handles incoming requests, manipulates the Model, and updates the View.</td>
+                    <td><strong>Shared</strong> Database.</td>
+                    <td>Each service has its <strong>own</strong> Database.</td>
+                </tr>
+                <tr>
+                    <td>Pros: Low cost, Simple to develop initially.</td>
+                    <td>Pros: Scalable, Maintainable, Flexible technology.</td>
+                </tr>
+                <tr>
+                    <td>Cons: Hard to scale, hard to maintain as it grows.</td>
+                    <td>Cons: Extra complexity, cross-cutting concerns.</td>
                 </tr>
             </tbody>
         </table>
 
-        <p><strong>Common Frameworks:</strong> Spring (Java), Django (Python), Rails (Ruby), Laravel (PHP).</p>
-        <p><strong>Advantages:</strong> Rapid development, Low coupling, Efficient debugging.</p>
-
-        <!-- SECTION 3 -->
-        <h2>3. Monolithic vs. Microservices</h2>
-        <p>The evolution of how we structure entire applications.</p>
-
-        <table class="comp-table">
-            <thead>
-                <tr>
-                    <th>Aspect</th>
-                    <th>Monolithic Architecture</th>
-                    <th>Microservice Architecture</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Structure</strong></td>
-                    <td>Single, indivisible unit. All functions served in one place.</td>
-                    <td>Collection of smaller, independent units.</td>
-                </tr>
-                <tr>
-                    <td><strong>Database</strong></td>
-                    <td>Shared database for the whole app.</td>
-                    <td>Each service often has its own database.</td>
-                </tr>
-                <tr>
-                    <td><strong>Communication</strong></td>
-                    <td>Internal function calls.</td>
-                    <td>Lightweight mechanisms (HTTP API).</td>
-                </tr>
-                <tr>
-                    <td><strong>Pros</strong></td>
-                    <td>Low cost, Simple to develop/deploy initially.</td>
-                    <td>Easy maintenance, High scalability, Low coupling.</td>
-                </tr>
-                <tr>
-                    <td><strong>Cons</strong></td>
-                    <td>Tight coupling, Difficult to scale, Hard to maintain as it grows.</td>
-                    <td>Extra complexity, cross-cutting concerns, higher cost.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- SECTION 4 -->
-        <h2>4. Specialized Architectures</h2>
+        <!-- SECTION 5: SPECIALIZED PATTERNS -->
+        <h2>5. Specialized Architectures</h2>
 
         <h3>Micro-Kernel (Plug-in) Architecture</h3>
-        <p>Consists of a <strong>Core System</strong> (minimal functionality) and several <strong>Plug-in Modules</strong> (specialized processing).</p>
+        <div class="highlight-box">
+            <strong>Structure:</strong> Core System (Minimal) + Plug-in Modules (Specialized).
+        </div>
         <ul>
-            <li><strong>Use Case:</strong> Applications with fixed core routines but dynamic rules that need frequent updates (e.g., Eclipse IDE, VS Code).</li>
-            <li><strong>Requirement:</strong> Plugins need good "handshaking code" so the kernel recognizes them.</li>
+            <li><strong>Concept:</strong> Core keeps the system running; Plug-ins add features.</li>
+            <li><strong>Requirement:</strong> Plugins need "handshaking code" to talk to the core.</li>
+            <li><strong>Use Case:</strong> Applications that need frequent updates or dynamic rules (e.g., IDEs like VS Code).</li>
         </ul>
 
         <h3>Event-Driven Architecture</h3>
-        <p>Made up of decoupled, single-purpose event processing components. They receive and process events <strong>asynchronously</strong>.</p>
+        <div class="highlight-box">
+            <strong>Structure:</strong> Decoupled event processing components.
+        </div>
         <ul>
-            <li><strong>Flow:</strong> Event → Event Queue → Event Mediator → Event Channel → Processors.</li>
-            <li><strong>Pros:</strong> Agile, highly performant, easy debugging.</li>
+            <li><strong>Concept:</strong> Components asynchronously receive and process events.</li>
+            <li><strong>Flow:</strong> Event -> Queue -> Mediator -> Channel -> Processor.</li>
+            <li><strong>Pros:</strong> Agile, High performance, Easy debugging.</li>
         </ul>
 
     </div>
