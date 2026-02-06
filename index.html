@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Syllabus Notes</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --accent-blue: #007bff;
+            --hover-shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .syllabus-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Card Styling */
+        .topic-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            border-left: 6px solid #ccc; /* Default border color */
+        }
+
+        .topic-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--hover-shadow);
+        }
+
+        .topic-info h2 {
+            font-size: 1.25rem;
+            margin-bottom: 5px;
+        }
+
+        .topic-info span {
+            font-size: 0.85rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .arrow {
+            font-size: 1.5rem;
+            color: #ccc;
+        }
+
+        /* Specific Colors for each topic based on typical coding themes */
+        .topic-card.pattern { border-left-color: #3498db; } /* Blue */
+        .topic-card.uiux { border-left-color: #e91e63; }    /* Pink */
+        .topic-card.arch { border-left-color: #f1c40f; }    /* Yellow */
+        .topic-card.ethics { border-left-color: #2ecc71; }  /* Green */
+        .topic-card.cpm { border-left-color: #9b59b6; }     /* Purple */
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Final Syllabus</h1>
+            <p>Study Notes Index</p>
+        </header>
+
+        <div class="syllabus-list">
+            
+            <!-- 1. Design Patterns -->
+            <a href="design-patterns.html" class="topic-card pattern">
+                <div class="topic-info">
+                    <span>Topic 01</span>
+                    <h2>Design Patterns</h2>
+                </div>
+                <div class="arrow">&rarr;</div>
+            </a>
+
+            <!-- 2. UI/UX -->
+            <a href="ui-ux.html" class="topic-card uiux">
+                <div class="topic-info">
+                    <span>Topic 02</span>
+                    <h2>UI/UX</h2>
+                </div>
+                <div class="arrow">&rarr;</div>
+            </a>
+
+            <!-- 3. Architecture -->
+            <a href="architecture.html" class="topic-card arch">
+                <div class="topic-info">
+                    <span>Topic 03</span>
+                    <h2>Architecture</h2>
+                </div>
+                <div class="arrow">&rarr;</div>
+            </a>
+
+            <!-- 4. Ethics -->
+            <a href="ethics.html" class="topic-card ethics">
+                <div class="topic-info">
+                    <span>Topic 04</span>
+                    <h2>Ethics</h2>
+                </div>
+                <div class="arrow">&rarr;</div>
+            </a>
+
+            <!-- 5. Critical Path Method -->
+            <a href="cpm.html" class="topic-card cpm">
+                <div class="topic-info">
+                    <span>Topic 05</span>
+                    <h2>Critical Path Method</h2>
+                </div>
+                <div class="arrow">&rarr;</div>
+            </a>
+
+        </div>
+
+        <footer>
+            Created for Github Pages
+        </footer>
+    </div>
+
+</body>
+</html>
