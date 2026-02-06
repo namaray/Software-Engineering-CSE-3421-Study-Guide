@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical Path Method Notes</title>
+    <style>
+        /* --- CPM THEME (PURPLE) --- */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --accent-purple: #9b59b6;
+            --light-purple: #f4ecf7;
+            --node-border: #333;
+            --critical-color: #e74c3c; /* Red for Critical Path */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--accent-purple);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #666;
+            font-weight: bold;
+        }
+        .back-link:hover { color: var(--accent-purple); }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #2c3e50; }
+        h2 { font-size: 1.8rem; margin-top: 40px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h3 { font-size: 1.2rem; margin-top: 25px; margin-bottom: 10px; color: var(--accent-purple); font-weight: 700; }
+        
+        p { margin-bottom: 15px; }
+        ul, ol { margin-bottom: 20px; margin-left: 20px; }
+
+        /* --- THE NODE DIAGRAM STYLES --- */
+        /* This CSS creates the 6-box grid seen in the slides */
+        .node-wrapper {
+            display: inline-block;
+            margin: 10px;
+            vertical-align: top;
+        }
+
+        .node {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width: 180px;
+            border: 2px solid var(--node-border);
+            background: white;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .node div {
+            padding: 5px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 35px;
+        }
+
+        /* Middle Row (Activity Name) */
+        .node .label {
+            grid-column: 1 / -1; /* Span all 3 columns */
+            font-weight: bold;
+            background-color: #eee;
+            text-transform: uppercase;
+        }
+
+        /* Specific colors for specific values */
+        .es { color: var(--accent-purple); font-weight: bold; } /* Earliest Start */
+        .ef { color: var(--accent-purple); font-weight: bold; } /* Earliest Finish */
+        .ls { color: #d35400; } /* Latest Start */
+        .lf { color: #d35400; } /* Latest Finish */
+        
+        /* Critical Path Styling */
+        .node.critical {
+            border-color: var(--critical-color);
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.2);
+        }
+        .node.critical .label {
+            background-color: #fadbd8; /* Light Red */
+            color: var(--critical-color);
+        }
+
+        /* Legend */
+        .legend-box {
+            background: var(--light-purple);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .legend-grid {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Formulas */
+        .formula {
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Index</a>
+        
+        <h1>Critical Path Method (CPM)</h1>
+        <p><strong>Course:</strong> CSE 3421 | <strong>Topic:</strong> Scheduling & Estimation</p>
+        <hr>
+
+        <!-- SECTION 1: INTRODUCTION -->
+        <h2>1. Definitions</h2>
+        <p><strong>CPM</strong> is a project planning method used to determine the earliest time a project can be completed.</p>
+        
+        <ul>
+            <li><strong>Critical Task:</strong> A task that cannot be delayed. If it is delayed, the whole project is delayed.</li>
+            <li><strong>Critical Path:</strong> The longest path through the network. It determines the minimum time required for the project.</li>
+            <li><strong>Float (Slack):</strong> How much an activity can be delayed without affecting the project deadline. <br>
+                <em>Formula:</em> <code>Float = LS - ES</code> (If Float is 0, it is a Critical Task).
+            </li>
+        </ul>
+
+        <!-- SECTION 2: NODE LEGEND -->
+        <h2>2. Understanding the Node Diagram</h2>
+        <div class="legend-box">
+            <p>We use the <strong>Activity-on-Node</strong> system. Each box represents one task.</p>
+            <div class="legend-grid">
+                <!-- Example Node -->
+                <div class="node-wrapper">
+                    <div class="node">
+                        <div class="es">ES</div>
+                        <div>Dur</div>
+                        <div class="ef">EF</div>
+                        
+                        <div class="label">Name</div>
+                        
+                        <div class="ls">LS</div>
+                        <div>Float</div>
+                        <div class="lf">LF</div>
+                    </div>
+                </div>
+                <!-- Legend Text -->
+                <div style="font-size: 0.9rem;">
+                    <strong>ES:</strong> Earliest Start<br>
+                    <strong>Dur:</strong> Duration<br>
+                    <strong>EF:</strong> Earliest Finish<br>
+                    <strong>LS:</strong> Latest Start<br>
+                    <strong>Float:</strong> Slack Time<br>
+                    <strong>LF:</strong> Latest Finish
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: THE EXAMPLE -->
+        <h2>3. Example Project Calculation</h2>
+        <p>We will calculate the schedule for the activities A through H.</p>
+
+        <h3>Step A: Forward Pass (Find Earliest Times)</h3>
+        <p>
+            <span class="formula">ES = Max(Predecessor EF)</span> <span class="formula">EF = ES + Duration</span><br>
+            Start from left (0) and move right. If a node has multiple predecessors, take the <strong>highest</strong> EF.
+        </p>
+
+        <div style="overflow-x: auto; white-space: nowrap; padding-bottom: 20px;">
+            <!-- Column 1 -->
+            <div class="node-wrapper">
+                <strong>Activity A</strong><br>
+                Starts at 0.<br>
+                <div class="node">
+                    <div class="es">0</div><div>6</div><div class="ef">6</div>
+                    <div class="label">A</div>
+                    <div></div><div></div><div></div>
+                </div>
+            </div>
+            
+            <div class="node-wrapper">
+                <strong>Activity B</strong><br>
+                Starts at 0.<br>
+                <div class="node">
+                    <div class="es">0</div><div>4</div><div class="ef">4</div>
+                    <div class="label">B</div>
+                    <div></div><div></div><div></div>
+                </div>
+            </div>
+
+            <div class="node-wrapper">
+                <strong>Activity F</strong><br>
+                Starts at 0.<br>
+                <div class="node critical">
+                    <div class="es">0</div><div>10</div><div class="ef">10</div>
+                    <div class="label">F</div>
+                    <div></div><div></div><div></div>
+                </div>
+            </div>
+
+            <span>&rarr; connects to &rarr;</span>
+
+            <!-- Column 2 -->
+            <div class="node-wrapper">
+                <strong>Activity C</strong><br>
+                After A (6).<br>
+                <div class="node">
+                    <div class="es">6</div><div>3</div><div class="ef">9</div>
+                    <div class="label">C</div>
+                    <div></div><div></div><div></div>
+                </div>
+            </div>
+
+            <div class="node-wrapper">
+                <strong>Activity D</strong><br>
+                After B (4).<br>
+                <div class="node">
+                    <div class="es">4</div><div>4</div><div class="ef">8</div>
+                    <div class="label">D</div>
+                    <div></div><div></div><div></div>
+                </div>
+            </div>
+
+             <div class="node-wrapper">
+                <strong>Activity E</strong><br>
+                After B (4).<br>
+                <div class="node">
+                    <div class="es">4</div><div>3</div><div class="ef">7</div>
+                    <div class="label">E</div>
+                    <div></div><div></div><div></div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border-top: 1px dashed #ccc; margin: 20px 0;">
+
+        <h3>Step B: Backward Pass (Find Latest Times)</h3>
+        <p>
+            <span class="formula">LF = Min(Successor LS)</span> <span class="formula">LS = LF - Duration</span><br>
+            <strong>Project Duration:</strong> Max(EF) of last tasks is <strong>13</strong> (from Activity G).<br>
+            Start from right (13) and move left. If a node goes to multiple successors, take the <strong>lowest</strong> LS.
+        </p>
+
+        <div style="overflow-x: auto; white-space: nowrap; padding-bottom: 20px;">
+            <!-- Final Nodes Calculation -->
+            <div class="node-wrapper">
+                <strong>Activity G</strong><br>
+                Needs E(7) & F(10).<br>
+                Starts at 10. Ends 13.<br>
+                <div class="node critical">
+                    <div class="es">10</div><div>3</div><div class="ef">13</div>
+                    <div class="label">G</div>
+                    <div class="ls">10</div><div>0</div><div class="lf">13</div>
+                </div>
+            </div>
+
+            <div class="node-wrapper">
+                <strong>Activity H</strong><br>
+                Needs C(9) & D(8).<br>
+                Starts at 9. Ends 11.<br>
+                <div class="node">
+                    <div class="es">9</div><div>2</div><div class="ef">11</div>
+                    <div class="label">H</div>
+                    <div class="ls">11</div><div>2</div><div class="lf">13</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Step C: Identifying the Critical Path</h3>
+        <p>The Critical Path is the sequence where <strong>Float = 0</strong> (ES == LS).</p>
+        
+        <p><strong>Calculated Floats:</strong></p>
+        <ul>
+            <li>Activity F: Start 0, Duration 10, Finish 10. (Must finish by 10 for G to start). <strong>Float = 0</strong>.</li>
+            <li>Activity G: Start 10, Duration 3, Finish 13. (Project ends at 13). <strong>Float = 0</strong>.</li>
+            <li>Activity H: Finishes at 11, but project allows until 13. <strong>Float = 2</strong>.</li>
+        </ul>
+
+        <div style="background: #fdedec; border: 2px solid #e74c3c; padding: 15px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #c0392b; margin-top: 0;">Final Critical Path</h3>
+            <p style="font-size: 1.5rem; font-weight: bold;">START &rarr; F &rarr; G &rarr; FINISH</p>
+            <p>Total Project Duration: <strong>13 Weeks</strong></p>
+        </div>
+
+    </div>
+
+</body>
+</html>
