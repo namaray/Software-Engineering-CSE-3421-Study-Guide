@@ -3,283 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Patterns Notes</title>
+    <title>Design Patterns Study Notes</title>
     <style>
-        /* --- DESIGN PATTERN THEME (BLUE) --- */
+        /* --- DESIGN PATTERNS THEME (BLUE) --- */
         :root {
-            --bg-color: #f0f2f5;
-            --text-color: #333;
-            --accent-blue: #3498db;
-            --light-blue: #ebf5fb;
-            --uml-border: #2c3e50;
-            --uml-header: #ecf0f1;
+            --bg-color: #f4f6f8;
+            --text-color: #2c3e50;
+            --primary-blue: #2980b9;
+            --light-blue: #eaf2f8;
+            --border-color: #bdc3c7;
+            --code-bg: #f7f9f9;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             padding: 40px 20px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-top: 6px solid var(--accent-blue);
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 8px solid var(--primary-blue);
         }
 
         .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
             text-decoration: none;
-            color: #666;
+            color: #7f8c8d;
             font-weight: bold;
+            font-size: 0.9rem;
         }
-        .back-link:hover { color: var(--accent-blue); }
+        .back-link:hover { color: var(--primary-blue); }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #2c3e50; }
+        h1 { font-size: 2.5rem; margin-top: 10px; color: var(--primary-blue); }
         h2 { 
-            font-size: 1.8rem; 
-            margin-top: 50px; 
-            margin-bottom: 20px; 
+            background-color: var(--primary-blue); 
             color: white; 
-            background: #2c3e50;
-            padding: 10px 15px;
-            border-radius: 4px;
+            padding: 12px 20px; 
+            border-radius: 4px; 
+            margin-top: 50px;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
         }
-        h3 { font-size: 1.4rem; margin-top: 30px; margin-bottom: 10px; color: var(--accent-blue); border-bottom: 2px solid var(--light-blue); display: inline-block;}
-        
-        p { margin-bottom: 15px; }
-        ul { margin-bottom: 20px; margin-left: 20px; }
+        h3 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid var(--light-blue); 
+            display: inline-block; 
+            margin-top: 35px;
+            font-size: 1.3rem;
+            padding-bottom: 5px;
+        }
 
-        /* --- UML CLASS CARD STYLING --- */
-        /* This makes HTML divs look like UML boxes */
-        .uml-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            align-items: flex-start;
-            background: var(--light-blue);
-            padding: 20px;
+        p, li { font-size: 1.05rem; margin-bottom: 10px; }
+        ul { margin-left: 20px; margin-bottom: 20px; }
+
+        /* --- UML CLASS BOX STYLING --- */
+        .uml-wrapper {
+            background-color: var(--light-blue);
+            padding: 30px;
             border-radius: 8px;
-            margin: 15px 0;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            overflow-x: auto;
         }
 
         .uml-class {
             background: white;
-            border: 2px solid var(--uml-border);
-            width: 180px;
+            border: 2px solid #34495e;
+            width: 220px;
+            box-shadow: 4px 4px 0px rgba(44, 62, 80, 0.1);
+            font-family: 'Courier New', monospace;
             font-size: 0.85rem;
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            z-index: 2;
+            position: relative;
         }
 
-        .uml-name {
-            background: var(--uml-header);
+        .uml-header {
+            background-color: #ecf0f1;
             padding: 8px;
             text-align: center;
             font-weight: bold;
-            border-bottom: 1px solid var(--uml-border);
-        }
-        
-        .uml-type {
-            font-size: 0.7rem;
-            color: #7f8c8d;
-            font-style: italic;
-            display: block;
+            border-bottom: 1px solid #34495e;
         }
 
-        .uml-methods {
-            padding: 8px;
+        .uml-header span {
+            display: block;
+            font-size: 0.75rem;
+            font-style: italic;
+            font-weight: normal;
+        }
+
+        .uml-body {
+            padding: 10px;
             text-align: left;
         }
 
-        .arrow-down {
-            font-size: 2rem;
-            color: #7f8c8d;
-            margin-top: 20px;
+        /* --- ARROW STYLING (THE HARD PART) --- */
+        .relation-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            position: relative;
         }
 
-        .arrow-right {
-            font-size: 2rem;
-            color: #7f8c8d;
-            align-self: center;
+        /* Vertical Connector */
+        .connector-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Definition Box */
-        .concept-box {
-            background: #fff;
-            border-left: 4px solid var(--accent-blue);
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            font-style: italic;
-            color: #555;
+        /* 1. Inheritance (Solid Line + Empty Triangle) */
+        .arrow-solid-up {
+            width: 2px;
+            height: 40px;
+            background-color: #34495e;
+            position: relative;
+        }
+        .arrow-solid-up::after {
+            content: '';
+            position: absolute;
+            top: -10px; /* Moves triangle to top */
+            left: -6px;
+            width: 0; 
+            height: 0; 
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 10px solid #34495e; /* The triangle */
+        }
+        /* White fill for triangle to look hollow */
+        .arrow-solid-up::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: -4px;
+            width: 0; 
+            height: 0; 
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid white;
+            z-index: 1;
         }
 
-        .highlight { color: #e74c3c; font-weight: bold; }
+        /* 2. Implementation (Dashed Line + Empty Triangle) */
+        .arrow-dashed-up {
+            width: 0;
+            height: 40px;
+            border-left: 2px dashed #34495e;
+            position: relative;
+        }
+        /* Reuse the triangle logic */
+        .arrow-dashed-up::after {
+            content: '';
+            position: absolute;
+            top: -10px; left: -8px;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 10px solid #34495e;
+        }
+        .arrow-dashed-up::before {
+            content: '';
+            position: absolute;
+            top: -7px; left: -6px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid white;
+            z-index: 1;
+        }
+
+        /* 3. Dependency (Dashed Line + Open Arrow) */
+        .arrow-dependency-right {
+            height: 2px;
+            width: 50px;
+            border-top: 2px dashed #34495e;
+            position: relative;
+            margin-top: 20px; /* Center with box */
+        }
+        .arrow-dependency-right::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -5px;
+            border: solid #34495e;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            transform: rotate(-45deg);
+        }
+
+        /* Grid for multiple subclasses */
+        .subclass-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 0;
+        }
+
+        /* Definitions Box */
+        .def-box {
+            background: #fdf2e9;
+            border-left: 5px solid #e67e22;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .def-title { color: #e67e22; font-weight: bold; display: block; margin-bottom: 5px; }
 
     </style>
 </head>
 <body>
 
     <div class="container">
-        <a href="index.html" class="back-link">← Back to Index</a>
+        <a href="index.html" class="back-link">← Back to Syllabus</a>
         
-        <h1>Design Patterns</h1>
-        <p><strong>Course:</strong> CSE 3421 | <strong>Source:</strong> Gang of Four (GoF)</p>
-        <p>Standard solutions to common programming problems. They ensure <strong>loose coupling</strong> and make code flexible.</p>
+        <h1>Design Patterns (GoF)</h1>
+        <p>A standard solution to a common programming problem. It ensures <strong>loose coupling</strong> and increases understandability.</p>
+        
+        <!-- UML LEGEND -->
+        <div style="background:#333; color:white; padding:15px; border-radius:5px; margin-bottom:30px;">
+            <strong>UML Legend (Crucial for Diagrams):</strong>
+            <ul style="margin-bottom:0; font-size:0.9rem;">
+                <li><strong>Solid Line + Hollow Triangle:</strong> Generalization (Inheritance/Extends)</li>
+                <li><strong>Dashed Line + Hollow Triangle:</strong> Realization (Implements Interface)</li>
+                <li><strong>Dashed Line + Open Arrow:</strong> Dependency ("Uses")</li>
+                <li><strong>Solid Line + Diamond:</strong> Composition/Aggregation ("Has a")</li>
+            </ul>
+        </div>
+
         <hr>
 
-        <!-- ================= CREATIONAL ================= -->
+        <!-- ======================= CREATIONAL ======================= -->
         <h2>1. Creational Patterns</h2>
-        <p>Focus: How objects are instantiated (created).</p>
+        <p>Concerned with how objects are instantiated.</p>
 
-        <!-- FACTORY -->
+        <!-- FACTORY METHOD -->
         <h3>A. Factory Method</h3>
-        <div class="concept-box">
-            Defines an interface for creating an object, but lets subclasses decide which class to instantiate.
+        <div class="def-box">
+            <span class="def-title">Definition</span>
+            Defines an interface for creating an object but lets subclasses decide which class to instantiate.
+            <br><em>Motivation:</em> Removes the instantiation of actual implementation classes from client code.
         </div>
-        <p><strong>Example:</strong> A <code>ShapeFactory</code> that creates Circles or Squares based on input.</p>
-        
-        <div class="uml-container">
-            <!-- The Factory -->
+
+        <div class="uml-wrapper">
+            <!-- Interface -->
             <div class="uml-class">
-                <div class="uml-name">ShapeFactory</div>
-                <div class="uml-methods">+ getShape(type): Shape</div>
+                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>Shape</div>
+                <div class="uml-body">+ draw()</div>
             </div>
 
-            <div class="arrow-right">→</div>
-
-            <!-- The Interface -->
-            <div class="uml-class">
-                <div class="uml-name"><span class="uml-type">&lt;&lt;interface&gt;&gt;</span>Shape</div>
-                <div class="uml-methods">+ draw()</div>
+            <!-- Arrow: Implementation (Dashed) -->
+            <div class="subclass-row" style="width: 100%; justify-content: center; gap: 100px;">
+                 <div class="arrow-dashed-up"></div>
+                 <div class="arrow-dashed-up"></div>
             </div>
 
-            <div class="arrow-right">←</div>
-
-            <!-- The Concrete Classes -->
-            <div style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Concrete Classes -->
+            <div class="subclass-row">
                 <div class="uml-class">
-                    <div class="uml-name">Circle</div>
-                    <div class="uml-methods">+ draw()</div>
+                    <div class="uml-header">Circle</div>
+                    <div class="uml-body">+ draw()</div>
                 </div>
                 <div class="uml-class">
-                    <div class="uml-name">Rectangle</div>
-                    <div class="uml-methods">+ draw()</div>
+                    <div class="uml-header">Rectangle</div>
+                    <div class="uml-body">+ draw()</div>
                 </div>
             </div>
+
+            <p style="margin-top: 20px; font-weight:bold;">The Factory:</p>
+            <!-- The Factory Class -->
+            <div class="uml-class" style="border-color: #e74c3c;">
+                <div class="uml-header">ShapeFactory</div>
+                <div class="uml-body">+ getShape(type): Shape</div>
+            </div>
         </div>
+        <p><strong>Consequences:</strong> Makes code more robust. You can add a "Triangle" later without breaking the Client code.</p>
 
         <!-- ABSTRACT FACTORY -->
         <h3>B. Abstract Factory</h3>
-        <div class="concept-box">
-            A "Factory of Factories". Provides an interface for creating families of related objects (e.g., Shapes AND Colors).
+        <div class="def-box">
+            <span class="def-title">Definition</span>
+            Provide an interface for creating <strong>families</strong> of related or dependent objects (Factory of Factories).
         </div>
-        <p><strong>Analogy:</strong> A <code>FactoryProducer</code> gives you either a <code>PaintFactory</code> or an <code>AnimationFactory</code>.</p>
+        <p><strong>Example:</strong> A <code>VehicleFactory</code> that produces unrelated parts (Wheels, Engine) that must fit together for a specific Car Model.</p>
+        <ul>
+            <li><strong>Client:</strong> Asks <code>FactoryProducer</code> for a factory.</li>
+            <li><strong>AbstractFactory:</strong> Interface for <code>getShape()</code> and <code>getColor()</code>.</li>
+            <li><strong>Concrete Factories:</strong> <code>PaintFactory</code> (creates shapes/colors) vs <code>AnimationFactory</code>.</li>
+        </ul>
 
         <!-- SINGLETON -->
         <h3>C. Singleton</h3>
-        <div class="concept-box">
+        <div class="def-box">
+            <span class="def-title">Definition</span>
             Ensures a class has only <strong>one instance</strong> and provides a global point of access to it.
         </div>
-        <p><strong>Use Case:</strong> Database Connections, HTTP Connections.</p>
-        <div class="uml-container">
+        
+        <div class="uml-wrapper">
             <div class="uml-class">
-                <div class="uml-name">DbConnection</div>
-                <div class="uml-methods">
-                    - static instance<br>
-                    - private Constructor()<br>
-                    + getInstance()
+                <div class="uml-header">DbConnection</div>
+                <div class="uml-body">
+                    - static instance: DbConnection<br>
+                    <span style="color:#c0392b;">- DbConnection()</span> (Private!)<br>
+                    + static getInstance(): DbConnection
+                </div>
+            </div>
+            <div style="display:flex; align-items:center;">
+                <div class="arrow-dependency-right"></div>
+                <div class="uml-class" style="width: 100px; text-align:center;">Client</div>
+            </div>
+        </div>
+        <p><strong>Key Code concept:</strong> The constructor is <code>private</code> so no one else can say <code>new DbConnection()</code>. They must use <code>getInstance()</code>.</p>
+
+
+        <!-- ======================= STRUCTURAL ======================= -->
+        <h2>2. Structural Patterns</h2>
+        <p>Concerned with how classes and objects are composed (combined).</p>
+
+        <!-- ADAPTER -->
+        <h3>A. Adapter Pattern</h3>
+        <div class="def-box">
+            <span class="def-title">Definition</span>
+            Converts the interface of a class into another interface the clients expect.
+            <br><em>Analogy:</em> A Travel Plug Adapter (US Plug into EU Socket).
+        </div>
+
+        <div class="uml-wrapper">
+            <div class="relation-group">
+                <div class="uml-class" style="width:120px;">Client</div>
+                <div class="arrow-dependency-right"></div>
+                <div class="uml-class">
+                    <div class="uml-header">Adapter</div>
+                    <div class="uml-body">
+                        + request()<br>
+                        <em>(calls adaptee.specificRequest)</em>
+                    </div>
+                </div>
+                <div class="arrow-dependency-right"></div>
+                <div class="uml-class">
+                    <div class="uml-header">Adaptee</div>
+                    <div class="uml-body">+ specificRequest()</div>
+                </div>
+            </div>
+        </div>
+        <p><strong>Practice Problem:</strong> Video Player. System plays mp4/vlc. Client wants to play mp3 (audio). Use an <code>AudioAdapter</code> to translate the request.</p>
+
+
+        <!-- DECORATOR -->
+        <h3>B. Decorator Pattern</h3>
+        <div class="def-box">
+            <span class="def-title">Definition</span>
+            Attaches additional responsibilities to an object dynamically. An alternative to subclassing for extending functionality.
+            <br><em>Principle:</em> Open for Extension, Closed for Modification.
+        </div>
+        <p><strong>Structure:</strong> A Decorator <em>is a</em> Shape (Inheritance) AND <em>has a</em> Shape (Composition).</p>
+        
+        <div class="uml-wrapper">
+            <!-- Interface -->
+            <div class="uml-class">
+                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>Shape</div>
+                <div class="uml-body">+ draw()</div>
+            </div>
+
+            <!-- Relationships -->
+            <div class="subclass-row" style="gap: 150px;">
+                 <div class="arrow-dashed-up"></div> <!-- Circle implements Shape -->
+                 <div class="arrow-dashed-up"></div> <!-- Decorator implements Shape -->
+            </div>
+
+            <div class="subclass-row">
+                <div class="uml-class">
+                    <div class="uml-header">Circle</div>
+                    <div class="uml-body">+ draw()</div>
+                </div>
+                <div class="uml-class">
+                    <div class="uml-header">ShapeDecorator</div>
+                    <div class="uml-body">
+                        - shape: Shape<br>
+                        + draw() { shape.draw() }
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-solid-up"></div>
+
+            <div class="uml-class">
+                <div class="uml-header">RedBorderDecorator</div>
+                <div class="uml-body">
+                    + draw() { <br>
+                    &nbsp;&nbsp;super.draw();<br>
+                    &nbsp;&nbsp;setRedBorder();<br>
+                    }
                 </div>
             </div>
         </div>
 
-        <!-- ================= STRUCTURAL ================= -->
-        <h2>2. Structural Patterns</h2>
-        <p>Focus: How classes and objects are combined/composed.</p>
 
-        <!-- ADAPTER -->
-        <h3>A. Adapter Pattern</h3>
-        <div class="concept-box">
-            Acts as a bridge between two incompatible interfaces.
-        </div>
-        <p><strong>Real World Example:</strong> Travel Adapter (US Plug into EU Socket).</p>
-        <div class="uml-container">
-            <div class="uml-class">
-                <div class="uml-name">Client</div>
-                <div class="uml-methods">Wants to use Target</div>
-            </div>
-            <div class="arrow-right">→</div>
-            <div class="uml-class">
-                <div class="uml-name">Adapter</div>
-                <div class="uml-methods">Translates request</div>
-            </div>
-            <div class="arrow-right">→</div>
-            <div class="uml-class">
-                <div class="uml-name">Adaptee</div>
-                <div class="uml-methods">Incompatible Class</div>
-            </div>
-        </div>
-
-        <!-- DECORATOR -->
-        <h3>B. Decorator Pattern</h3>
-        <div class="concept-box">
-            Adds new functionality to an existing object without altering its structure. "Wraps" the object.
-        </div>
-        <p><strong>Example:</strong> Pizza Toppings. Start with <code>Pizza</code>, wrap it in <code>CheeseDecorator</code>, wrap that in <code>PepperoniDecorator</code>.</p>
-
-        <!-- ================= BEHAVIORAL ================= -->
+        <!-- ======================= BEHAVIORAL ======================= -->
         <h2>3. Behavioral Patterns</h2>
-        <p>Focus: How objects communicate with each other.</p>
+        <p>Concerned with communication between objects.</p>
 
         <!-- STATE -->
         <h3>A. State Pattern</h3>
-        <div class="concept-box">
-            Allows an object to alter its behavior when its internal state changes.
+        <div class="def-box">
+            <span class="def-title">Definition</span>
+            Allows an object to alter its behavior when its internal state changes. The object will appear to change its class.
         </div>
-        <p><strong>Example:</strong> A TV Remote.</p>
-        <ul>
-            <li>If State is <span class="highlight">On</span>, the power button turns it Off.</li>
-            <li>If State is <span class="highlight">Off</span>, the power button turns it On.</li>
-        </ul>
+        <p><strong>Example:</strong> Traffic Light (Red state vs Green state behavior) or TV Remote.</p>
+        
+        <div class="uml-wrapper">
+            <div class="uml-class">
+                <div class="uml-header">Context (Remote)</div>
+                <div class="uml-body">
+                    - state: State<br>
+                    + pressButton() {<br>
+                    &nbsp;&nbsp;state.doAction()<br>
+                    }
+                </div>
+            </div>
+            <div class="arrow-dependency-right"></div>
+            <div class="uml-class">
+                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>State</div>
+                <div class="uml-body">+ doAction()</div>
+            </div>
+        </div>
 
         <!-- STRATEGY -->
         <h3>B. Strategy Pattern</h3>
-        <div class="concept-box">
-            Defines a family of algorithms and makes them interchangeable at runtime.
+        <div class="def-box">
+            <span class="def-title">Definition</span>
+            Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.
         </div>
-        <p><strong>Example:</strong> Sorting or Math Operations.</p>
-        <div class="uml-container">
-            <div class="uml-class">
-                <div class="uml-name">Context</div>
-                <div class="uml-methods">executeStrategy()</div>
+        <p><strong>Example:</strong> Sorting Algorithms or Payment Methods.</p>
+        
+        <div class="uml-wrapper">
+             <div class="uml-class">
+                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>Strategy</div>
+                <div class="uml-body">+ execute(a, b)</div>
             </div>
-            <div class="arrow-right">→</div>
-            <div class="uml-class">
-                <div class="uml-name"><span class="uml-type">&lt;&lt;interface&gt;&gt;</span>Strategy</div>
-                <div class="uml-methods">+ doAction()</div>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:5px; margin-left:10px;">
-                <div class="uml-class" style="width:120px;">AddStrategy</div>
-                <div class="uml-class" style="width:120px;">SubStrategy</div>
-                <div class="uml-class" style="width:120px;">MulStrategy</div>
-            </div>
-        </div>
 
-        <hr>
-        <h3>Practice Scenarios (For Exam)</h3>
-        <ul>
-            <li><strong>Traffic Light:</strong> Use <em>State Pattern</em> (Red -> Green -> Yellow).</li>
-            <li><strong>Audio Player (mp3, wav, vlc):</strong> Use <em>Adapter Pattern</em> to make incompatible formats play.</li>
-            <li><strong>Sort Array (Bubble, Quick, Merge):</strong> Use <em>Strategy Pattern</em> to swap algorithms.</li>
-            <li><strong>Coffee Shop Ingredients:</strong> Use <em>Factory/Abstract Factory</em>.</li>
-        </ul>
+            <div class="subclass-row" style="gap: 50px;">
+                <div class="arrow-dashed-up"></div>
+                <div class="arrow-dashed-up"></div>
+                <div class="arrow-dashed-up"></div>
+            </div>
+
+            <div class="subclass-row">
+                <div class="uml-class" style="width:150px">AddStrategy</div>
+                <div class="uml-class" style="width:150px">SubStrategy</div>
+                <div class="uml-class" style="width:150px">MulStrategy</div>
+            </div>
+        </div>
+        <p><strong>Practice Problem:</strong> Sorting an array. Client wants to find the 2nd largest number. You can swap between <code>BubbleSort</code>, <code>QuickSort</code>, etc., without changing the client code.</p>
 
     </div>
 
