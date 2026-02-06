@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Patterns Notes</title>
+    <style>
+        /* --- DESIGN PATTERN THEME (BLUE) --- */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --accent-blue: #3498db;
+            --light-blue: #ebf5fb;
+            --uml-border: #2c3e50;
+            --uml-header: #ecf0f1;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--accent-blue);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #666;
+            font-weight: bold;
+        }
+        .back-link:hover { color: var(--accent-blue); }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #2c3e50; }
+        h2 { 
+            font-size: 1.8rem; 
+            margin-top: 50px; 
+            margin-bottom: 20px; 
+            color: white; 
+            background: #2c3e50;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+        h3 { font-size: 1.4rem; margin-top: 30px; margin-bottom: 10px; color: var(--accent-blue); border-bottom: 2px solid var(--light-blue); display: inline-block;}
+        
+        p { margin-bottom: 15px; }
+        ul { margin-bottom: 20px; margin-left: 20px; }
+
+        /* --- UML CLASS CARD STYLING --- */
+        /* This makes HTML divs look like UML boxes */
+        .uml-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            background: var(--light-blue);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .uml-class {
+            background: white;
+            border: 2px solid var(--uml-border);
+            width: 180px;
+            font-size: 0.85rem;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+        }
+
+        .uml-name {
+            background: var(--uml-header);
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid var(--uml-border);
+        }
+        
+        .uml-type {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            font-style: italic;
+            display: block;
+        }
+
+        .uml-methods {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .arrow-down {
+            font-size: 2rem;
+            color: #7f8c8d;
+            margin-top: 20px;
+        }
+
+        .arrow-right {
+            font-size: 2rem;
+            color: #7f8c8d;
+            align-self: center;
+        }
+
+        /* Definition Box */
+        .concept-box {
+            background: #fff;
+            border-left: 4px solid var(--accent-blue);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .highlight { color: #e74c3c; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Index</a>
+        
+        <h1>Design Patterns</h1>
+        <p><strong>Course:</strong> CSE 3421 | <strong>Source:</strong> Gang of Four (GoF)</p>
+        <p>Standard solutions to common programming problems. They ensure <strong>loose coupling</strong> and make code flexible.</p>
+        <hr>
+
+        <!-- ================= CREATIONAL ================= -->
+        <h2>1. Creational Patterns</h2>
+        <p>Focus: How objects are instantiated (created).</p>
+
+        <!-- FACTORY -->
+        <h3>A. Factory Method</h3>
+        <div class="concept-box">
+            Defines an interface for creating an object, but lets subclasses decide which class to instantiate.
+        </div>
+        <p><strong>Example:</strong> A <code>ShapeFactory</code> that creates Circles or Squares based on input.</p>
+        
+        <div class="uml-container">
+            <!-- The Factory -->
+            <div class="uml-class">
+                <div class="uml-name">ShapeFactory</div>
+                <div class="uml-methods">+ getShape(type): Shape</div>
+            </div>
+
+            <div class="arrow-right">→</div>
+
+            <!-- The Interface -->
+            <div class="uml-class">
+                <div class="uml-name"><span class="uml-type">&lt;&lt;interface&gt;&gt;</span>Shape</div>
+                <div class="uml-methods">+ draw()</div>
+            </div>
+
+            <div class="arrow-right">←</div>
+
+            <!-- The Concrete Classes -->
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div class="uml-class">
+                    <div class="uml-name">Circle</div>
+                    <div class="uml-methods">+ draw()</div>
+                </div>
+                <div class="uml-class">
+                    <div class="uml-name">Rectangle</div>
+                    <div class="uml-methods">+ draw()</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABSTRACT FACTORY -->
+        <h3>B. Abstract Factory</h3>
+        <div class="concept-box">
+            A "Factory of Factories". Provides an interface for creating families of related objects (e.g., Shapes AND Colors).
+        </div>
+        <p><strong>Analogy:</strong> A <code>FactoryProducer</code> gives you either a <code>PaintFactory</code> or an <code>AnimationFactory</code>.</p>
+
+        <!-- SINGLETON -->
+        <h3>C. Singleton</h3>
+        <div class="concept-box">
+            Ensures a class has only <strong>one instance</strong> and provides a global point of access to it.
+        </div>
+        <p><strong>Use Case:</strong> Database Connections, HTTP Connections.</p>
+        <div class="uml-container">
+            <div class="uml-class">
+                <div class="uml-name">DbConnection</div>
+                <div class="uml-methods">
+                    - static instance<br>
+                    - private Constructor()<br>
+                    + getInstance()
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= STRUCTURAL ================= -->
+        <h2>2. Structural Patterns</h2>
+        <p>Focus: How classes and objects are combined/composed.</p>
+
+        <!-- ADAPTER -->
+        <h3>A. Adapter Pattern</h3>
+        <div class="concept-box">
+            Acts as a bridge between two incompatible interfaces.
+        </div>
+        <p><strong>Real World Example:</strong> Travel Adapter (US Plug into EU Socket).</p>
+        <div class="uml-container">
+            <div class="uml-class">
+                <div class="uml-name">Client</div>
+                <div class="uml-methods">Wants to use Target</div>
+            </div>
+            <div class="arrow-right">→</div>
+            <div class="uml-class">
+                <div class="uml-name">Adapter</div>
+                <div class="uml-methods">Translates request</div>
+            </div>
+            <div class="arrow-right">→</div>
+            <div class="uml-class">
+                <div class="uml-name">Adaptee</div>
+                <div class="uml-methods">Incompatible Class</div>
+            </div>
+        </div>
+
+        <!-- DECORATOR -->
+        <h3>B. Decorator Pattern</h3>
+        <div class="concept-box">
+            Adds new functionality to an existing object without altering its structure. "Wraps" the object.
+        </div>
+        <p><strong>Example:</strong> Pizza Toppings. Start with <code>Pizza</code>, wrap it in <code>CheeseDecorator</code>, wrap that in <code>PepperoniDecorator</code>.</p>
+
+        <!-- ================= BEHAVIORAL ================= -->
+        <h2>3. Behavioral Patterns</h2>
+        <p>Focus: How objects communicate with each other.</p>
+
+        <!-- STATE -->
+        <h3>A. State Pattern</h3>
+        <div class="concept-box">
+            Allows an object to alter its behavior when its internal state changes.
+        </div>
+        <p><strong>Example:</strong> A TV Remote.</p>
+        <ul>
+            <li>If State is <span class="highlight">On</span>, the power button turns it Off.</li>
+            <li>If State is <span class="highlight">Off</span>, the power button turns it On.</li>
+        </ul>
+
+        <!-- STRATEGY -->
+        <h3>B. Strategy Pattern</h3>
+        <div class="concept-box">
+            Defines a family of algorithms and makes them interchangeable at runtime.
+        </div>
+        <p><strong>Example:</strong> Sorting or Math Operations.</p>
+        <div class="uml-container">
+            <div class="uml-class">
+                <div class="uml-name">Context</div>
+                <div class="uml-methods">executeStrategy()</div>
+            </div>
+            <div class="arrow-right">→</div>
+            <div class="uml-class">
+                <div class="uml-name"><span class="uml-type">&lt;&lt;interface&gt;&gt;</span>Strategy</div>
+                <div class="uml-methods">+ doAction()</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:5px; margin-left:10px;">
+                <div class="uml-class" style="width:120px;">AddStrategy</div>
+                <div class="uml-class" style="width:120px;">SubStrategy</div>
+                <div class="uml-class" style="width:120px;">MulStrategy</div>
+            </div>
+        </div>
+
+        <hr>
+        <h3>Practice Scenarios (For Exam)</h3>
+        <ul>
+            <li><strong>Traffic Light:</strong> Use <em>State Pattern</em> (Red -> Green -> Yellow).</li>
+            <li><strong>Audio Player (mp3, wav, vlc):</strong> Use <em>Adapter Pattern</em> to make incompatible formats play.</li>
+            <li><strong>Sort Array (Bubble, Quick, Merge):</strong> Use <em>Strategy Pattern</em> to swap algorithms.</li>
+            <li><strong>Coffee Shop Ingredients:</strong> Use <em>Factory/Abstract Factory</em>.</li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
