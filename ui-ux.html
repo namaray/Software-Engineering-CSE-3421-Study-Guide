@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI/UX Study Notes</title>
+    <!-- We use the same CSS from the index page if it was external, 
+         but since we merged it, I will include the necessary styles here 
+         to keep this page looking good independently. -->
+    <style>
+        /* --- COPY OF STYLES FOR CONSISTENCY --- */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --accent-pink: #e91e63;
+            --light-pink: #fce4ec;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--accent-pink);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #666;
+            font-weight: bold;
+        }
+        .back-link:hover { color: var(--accent-pink); }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #2c3e50; }
+        h2 { font-size: 1.8rem; margin-top: 40px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h3 { font-size: 1.3rem; margin-top: 25px; margin-bottom: 10px; color: var(--accent-pink); }
+        
+        p { margin-bottom: 15px; }
+        
+        ul, ol { margin-bottom: 20px; margin-left: 20px; }
+        li { margin-bottom: 8px; }
+
+        /* Highlight Box for Definitions */
+        .highlight-box {
+            background-color: var(--light-pink);
+            border-left: 4px solid var(--accent-pink);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .vs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .vs-table th, .vs-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .vs-table th { background-color: #f9f9f9; }
+
+        .golden-rule {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .golden-rule strong { color: var(--accent-pink); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Index</a>
+        
+        <h1>UI and UX Design</h1>
+        <p><strong>Course:</strong> CSE 3421 | <strong>Source:</strong> Lecture Slides</p>
+        <hr>
+
+        <!-- SECTION 1 -->
+        <h2>1. UI vs. UX</h2>
+        <p>The "Face" of your software. If you don't take care of the appearance, users may not trust the functionality.</p>
+
+        <div class="highlight-box">
+            <p><strong>UI (User Interface):</strong> The visual elements (The ketchup bottle design, the cap, the label).</p>
+            <p><strong>UX (User Experience):</strong> The feeling of using it (Is it hard to get the ketchup out? Do you have to hit the bottom?).</p>
+        </div>
+
+        <h3>Usability</h3>
+        <p>The effectiveness with which users can accomplish tasks. It is measured by:</p>
+        <ul>
+            <li><strong>Learnability:</strong> Is it easy to learn for the first time?</li>
+            <li><strong>Efficiency:</strong> Once learned, is it fast to use?</li>
+            <li><strong>Safety:</strong> Are errors few and recoverable?</li>
+        </ul>
+
+        <p><em>Cost of bad UX:</em> 50% of "malfunctioning" returns are actually just too hard to use. (Example: Three Mile Island nuclear meltdown was caused by ambiguous UI).</p>
+
+        <!-- SECTION 2 -->
+        <h2>2. Design Process</h2>
+        
+        <h3>The "User" Philosophy</h3>
+        <ul>
+            <li><strong>You are not the user:</strong> Developers think differently than end-users. UI is about communicating with users, not other programmers.</li>
+            <li><strong>The User is always right:</strong> If they make consistent mistakes, it is the system's fault, not theirs.</li>
+        </ul>
+
+        <h3>Steps in UI Design</h3>
+        <ol>
+            <li><strong>Planning:</strong> Understand customer values, brainstorm, make feature lists, plan navigation.</li>
+            <li><strong>Prototyping & Sketching:</strong>
+                <ul>
+                    <li>Known as "Wireframe modeling" (Skeleton of the UI).</li>
+                    <li>Can be Manual (Paper/Pencil) or Electronic (Figma, Adobe XD).</li>
+                    <li><strong>Benefits:</strong> Aids implementation, helps discover requirements/test cases, ensures user satisfaction early.</li>
+                </ul>
+            </li>
+            <li><strong>Optimization:</strong> Refine the design.</li>
+            <li><strong>Implementation:</strong> Code the interface.</li>
+        </ol>
+
+        <!-- SECTION 3 -->
+        <h2>3. Types of Interfaces</h2>
+        
+        <table class="vs-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>GUI (Graphical User Interface)</th>
+                    <th>CLI (Command-line Interface)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Interaction</strong></td>
+                    <td>Graphics, Windows, Icons, Mouse</td>
+                    <td>Text commands, Terminal</td>
+                </tr>
+                <tr>
+                    <td><strong>Pros</strong></td>
+                    <td>Intuitive, Easy to learn (Low memory load)</td>
+                    <td>Powerful, Scriptable, Low resource usage</td>
+                </tr>
+                <tr>
+                    <td><strong>Cons</strong></td>
+                    <td>Slower for complex repetitive tasks</td>
+                    <td>Requires memorization, Steep learning curve</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- SECTION 4 -->
+        <h2>4. Shneiderman's 8 Golden Rules</h2>
+        <p>Critical for the exam. These are the fundamental principles of good design.</p>
+
+        <div class="golden-rule">
+            <strong>1. Strive for Consistency:</strong><br>
+            Use identical terminology (prompts, menus) and consistent layouts throughout the app. Don't use "Save" on one screen and "Write" on another.
+        </div>
+
+        <div class="golden-rule">
+            <strong>2. Shortcuts for Frequent Users:</strong><br>
+            As users get expert, they want speed. Use abbreviations, hotkeys (Ctrl+S), and macros.
+        </div>
+
+        <div class="golden-rule">
+            <strong>3. Offer Informative Feedback:</strong><br>
+            For every action, the system should respond. 
+            <br><em>Minor action:</em> Modest response (button click effect).
+            <br><em>Major action:</em> Substantial response (ProgressBar, "File Saved" modal).
+        </div>
+
+        <div class="golden-rule">
+            <strong>4. Design Dialog to Yield Closure:</strong><br>
+            Actions should have a Beginning, Middle, and End. Give the user a sense of relief/accomplishment (e.g., "Installation Complete" screen).
+        </div>
+
+        <div class="golden-rule">
+            <strong>5. Simple Error Handling:</strong><br>
+            Design so users <em>cannot</em> make serious errors (gray out invalid buttons). If an error happens, offer clear, simple mechanisms to fix it.
+        </div>
+
+        <div class="golden-rule">
+            <strong>6. Permit Easy Reversal of Actions:</strong><br>
+            The "Undo" button relieves anxiety. Users will explore more if they know they can fix mistakes.
+        </div>
+
+        <div class="golden-rule">
+            <strong>7. Internal Locus of Control:</strong><br>
+            Make the user feel like the "Boss". The user initiates actions; the system responds. Avoid automated surprises that take control away.
+        </div>
+
+        <div class="golden-rule">
+            <strong>8. Reduce Short-term Memory Load:</strong><br>
+            Humans have limited short-term memory. Keep displays simple. Don't make users remember a code from Screen 1 to type into Screen 3.
+        </div>
+
+        <!-- SECTION 5 -->
+        <h2>5. UI Components (Widgets)</h2>
+
+        <ul>
+            <li><strong>Buttons:</strong> For actions. Use <strong>Verbs</strong> (e.g., "Save," "Send"), not generic "OK/Yes".</li>
+            <li><strong>Check Boxes:</strong> Independent options (On/Off). Multiple can be selected.</li>
+            <li><strong>Radio Buttons:</strong> Related choices where <strong>only one</strong> can be selected at a time.</li>
+            <li><strong>Text Fields:</strong> When users need to type free input.</li>
+            <li><strong>Combo/List Boxes:</strong> Use for many fixed choices to save screen space.</li>
+            <li><strong>Menus:</strong> For infrequent actions. (Note: Users often dislike digging through menus; provide toolbars for common tasks).</li>
+            <li><strong>Tooltips:</strong> Hover text for help/information.</li>
+            <li><strong>Tabbed Panes:</strong> Switching between screens without losing context.</li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
