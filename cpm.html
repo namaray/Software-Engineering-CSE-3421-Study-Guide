@@ -13,6 +13,7 @@
             --light-purple: #f5eef8;
             --critical-red: #e74c3c;
             --calc-bg: #fff;
+            --table-header: #9b59b6;
         }
 
         body {
@@ -52,13 +53,45 @@
         }
         h3 { color: #2c3e50; margin-bottom: 10px; }
 
+        /* Definitions Box */
+        .def-box {
+            background: var(--light-purple);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--accent-purple);
+        }
+        .def-box strong { color: #4a235a; }
+
+        /* Problem Table */
+        .problem-table {
+            width: 100%;
+            max-width: 600px;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .problem-table th {
+            background-color: var(--table-header);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        .problem-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        .problem-table tr:nth-child(even) { background-color: #f9f9f9; }
+
         /* Calculation Steps Box */
         .step-box {
             background: var(--calc-bg);
+            border: 1px solid #e0e0e0;
             border-left: 4px solid var(--accent-purple);
             padding: 15px 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 4px;
         }
         .step-box strong { color: var(--accent-purple); }
         .step-box .formula {
@@ -106,9 +139,46 @@
         <a href="index.html" class="back-link">← Back to Index</a>
         
         <h1>Critical Path Method (CPM)</h1>
-        <p>A step-by-step guide to calculating the project schedule, identifying the critical path, and calculating float.</p>
+        <p><strong>Course:</strong> CSE 3421 | <strong>Topic:</strong> Project Scheduling</p>
+        <hr>
+
+        <!-- SECTION 1: DEFINITIONS -->
+        <h2>1. Basic Definitions</h2>
+        <div class="def-box">
+            <p><strong>Critical Path Method (CPM):</strong> A method used in project planning to determine the <em>earliest time</em> by which the whole project can be completed.</p>
+            <ul>
+                <li><strong>Critical Task:</strong> A task/activity which <em>cannot</em> be delayed. If it is delayed, the whole project is delayed.</li>
+                <li><strong>Critical Path:</strong> The sequence of critical tasks. It is the <strong>longest path</strong> through the network but represents the <strong>minimum time</strong> required to complete the project.</li>
+                <li><strong>Float (Slack):</strong> The amount of time a task can be delayed without delaying the project. <br><em>Formula:</em> <code>Float = LS - ES</code> or <code>LF - EF</code>.</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 2: THE PROBLEM -->
+        <h2>2. The Problem Statement</h2>
+        <p>We need to find the Critical Path and Duration for the following project activities:</p>
+        
+        <table class="problem-table">
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Duration (Weeks)</th>
+                    <th>Precedents (Depends on)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>A</td><td>6</td><td>- (Start)</td></tr>
+                <tr><td>B</td><td>4</td><td>- (Start)</td></tr>
+                <tr><td>C</td><td>3</td><td>A</td></tr>
+                <tr><td>D</td><td>4</td><td>B</td></tr>
+                <tr><td>E</td><td>3</td><td>B</td></tr>
+                <tr><td>F</td><td>10</td><td>- (Start)</td></tr>
+                <tr><td>G</td><td>3</td><td>E, F</td></tr>
+                <tr><td>H</td><td>2</td><td>C, D</td></tr>
+            </tbody>
+        </table>
 
         <!-- LEGEND -->
+        <h3>Node Legend (Activity-on-Node)</h3>
         <div style="background: #eee; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 20px;">
             <div style="width: 140px;">
                 <!-- Mini SVG for Legend -->
@@ -130,76 +200,54 @@
                     <text x="94" y="55" text-anchor="middle" font-size="9" fill="#d35400">LF</text>
                 </svg>
             </div>
-            <div>
-                <strong>The 6-Box Node Legend:</strong><br>
-                <span style="color:#2980b9">Top Row (Blue):</span> Forward Pass (Earliest Start/Finish)<br>
-                <span style="color:#333">Middle Row:</span> Activity Name<br>
-                <span style="color:#d35400">Bottom Row (Orange):</span> Backward Pass (Latest Start/Finish) & Float
+            <div style="font-size: 0.9rem;">
+                <strong>Top Row (Blue):</strong> Forward Pass (Earliest Start / Earliest Finish)<br>
+                <strong>Middle Row:</strong> Activity Name<br>
+                <strong>Bottom Row (Orange):</strong> Backward Pass (Latest Start / Latest Finish) & Float
             </div>
         </div>
 
-        <!-- SECTION 1: FORWARD PASS -->
-        <h2>Step 1: Forward Pass (Calculate Earliest Times)</h2>
-        <p>Start from the beginning (Left) and move to the end (Right).</p>
-        
+        <!-- SECTION 3: SOLUTION STEPS -->
+        <h2>3. Step-by-Step Solution</h2>
+
         <div class="step-box">
+            <h3>Step A: Forward Pass (Earliest Times)</h3>
             <span class="formula">ES = Max(Predecessor EF)</span>
             <span class="formula">EF = ES + Duration</span>
-            <br>
-            <strong>The "Merge" Rule:</strong> If an activity has multiple incoming arrows (predecessors), you must pick the <strong>HIGHEST</strong> EF value from them. You cannot start until <em>all</em> previous tasks are done.
-        </div>
-
-        <div class="step-box">
-            <h3>Detailed Calculation:</h3>
+            <p>Start from Left (0) → Move Right.</p>
             <ul>
-                <li><strong>Start (A, B, F):</strong> All start at 0.</li>
-                <li><strong>Node C:</strong> Depends on A (EF=6). So C starts at 6. Finishes at 6+3 = 9.</li>
-                <li><strong>Node D:</strong> Depends on B (EF=4). So D starts at 4. Finishes at 4+4 = 8.</li>
-                <li><strong>Node E:</strong> Depends on B (EF=4). So E starts at 4. Finishes at 4+3 = 7.</li>
-                <li><strong>Node G (MERGE):</strong> Depends on E (EF=7) AND F (EF=10).<br>
-                    Logic: We must wait for the longest one. Max(7, 10) = 10.<br>
-                    <em>Result:</em> G starts at 10. Finishes at 10+3 = 13.
-                </li>
-                <li><strong>Node H (MERGE):</strong> Depends on C (EF=9) AND D (EF=8).<br>
-                    Logic: Max(9, 8) = 9.<br>
-                    <em>Result:</em> H starts at 9. Finishes at 9+2 = 11.
-                </li>
+                <li><strong>Start (A, B, F):</strong> Start at 0.</li>
+                <li><strong>C:</strong> After A(6). Starts 6. Finishes 6+3=9.</li>
+                <li><strong>D:</strong> After B(4). Starts 4. Finishes 4+4=8.</li>
+                <li><strong>E:</strong> After B(4). Starts 4. Finishes 4+3=7.</li>
+                <li><strong>G (Merge):</strong> After E(7) AND F(10). <strong>Take MAX(7, 10) = 10</strong>. Finishes 10+3=13.</li>
+                <li><strong>H (Merge):</strong> After C(9) AND D(8). <strong>Take MAX(9, 8) = 9</strong>. Finishes 9+2=11.</li>
             </ul>
-            <p><strong>Project Duration:</strong> The project finishes when the last task finishes. Max(G=13, H=11) = <strong>13 Weeks</strong>.</p>
+            <p><strong>Project Duration:</strong> Max(13, 11) = <strong>13 Weeks</strong>.</p>
         </div>
 
-        <!-- SECTION 2: BACKWARD PASS -->
-        <h2>Step 2: Backward Pass (Calculate Latest Times)</h2>
-        <p>Start from the end (Right) and move to the beginning (Left).</p>
-
         <div class="step-box">
+            <h3>Step B: Backward Pass (Latest Times)</h3>
             <span class="formula">LF = Min(Successor LS)</span>
             <span class="formula">LS = LF - Duration</span>
-            <br>
-            <strong>The "Burst" Rule:</strong> If an arrow splits to multiple successors, you must pick the <strong>LOWEST</strong> LS value from them. You must finish early enough to satisfy <em>all</em> future deadlines.
-        </div>
-
-        <div class="step-box">
-            <h3>Detailed Calculation:</h3>
+            <p>Start from Right (13) → Move Left.</p>
             <ul>
-                <li><strong>Set End Date:</strong> The project takes 13 weeks. So, for the final nodes (G, H), set LF = 13.</li>
-                <li><strong>Node G:</strong> LF=13. Duration=3. LS = 13-3 = 10.</li>
-                <li><strong>Node H:</strong> LF=13 (Note: Even though H finished early at 11, the project deadline allows it to finish as late as 13). LS = 13-2 = 11.</li>
-                <li><strong>Node F:</strong> Arrow goes to G. G's LS is 10.<br>
-                    <em>Result:</em> F's LF is 10. LS = 10-10 = 0.
-                </li>
-                <li><strong>Node B (BURST):</strong> Arrow goes to D (LS=7) AND E (LS=7).<br>
-                    Logic: Min(7, 7) = 7.<br>
-                    <em>Result:</em> B's LF is 7. LS = 7-4 = 3.
-                </li>
+                <li><strong>End:</strong> Set LF for last nodes (G, H) to 13.</li>
+                <li><strong>G:</strong> LF=13. LS = 13-3 = 10.</li>
+                <li><strong>H:</strong> LF=13. LS = 13-2 = 11.</li>
+                <li><strong>F:</strong> Before G(10). LF=10. LS=0.</li>
+                <li><strong>C:</strong> Before H(11). LF=11. LS=8.</li>
+                <li><strong>D:</strong> Before H(11). LF=11. LS=7.</li>
+                <li><strong>E:</strong> Before G(10). LF=10. LS=7.</li>
+                <li><strong>A:</strong> Before C(8). LF=8. LS=2.</li>
+                <li><strong>B (Burst):</strong> Before D(7) AND E(7). <strong>Take MIN(7, 7) = 7</strong>. LF=7. LS=3.</li>
             </ul>
         </div>
 
-        <!-- SECTION 3: FINAL DIAGRAM -->
-        <h2>Step 3: The Complete Diagram & Critical Path</h2>
-        <p><strong>Critical Path:</strong> The path where Float = 0 (Top numbers == Bottom numbers). Any delay here delays the project.</p>
-
-        <div style="overflow-x: auto; border: 1px solid #ddd; padding: 10px;">
+        <!-- SECTION 4: DIAGRAM -->
+        <h2>4. Complete Network Diagram</h2>
+        
+        <div style="overflow-x: auto; border: 1px solid #ddd; padding: 10px; background:white;">
             <svg viewBox="0 0 800 400">
                 <defs>
                     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
@@ -210,33 +258,18 @@
                     </marker>
                 </defs>
 
-                <!-- 
-                   Layout:
-                   Col 1 (x=50): A(y=50), B(y=160), F(y=270)
-                   Col 2 (x=300): C(y=50), D(y=160), E(y=270)
-                   Col 3 (x=550): H(y=100), G(y=270)
-                -->
-
-                <!-- CONNECTIONS (Drawn first so they are behind boxes) -->
-                <!-- A -> C -->
-                <line x1="170" y1="80" x2="300" y2="80" class="arrow" />
-                <!-- B -> D -->
-                <line x1="170" y1="190" x2="300" y2="190" class="arrow" />
-                <!-- B -> E -->
-                <line x1="170" y1="190" x2="300" y2="300" class="arrow" />
-                <!-- C -> H -->
-                <line x1="420" y1="80" x2="550" y2="130" class="arrow" />
-                <!-- D -> H -->
-                <line x1="420" y1="190" x2="550" y2="130" class="arrow" />
-                <!-- E -> G -->
-                <line x1="420" y1="300" x2="550" y2="300" class="arrow" />
+                <!-- CONNECTIONS -->
+                <line x1="170" y1="80" x2="300" y2="80" class="arrow" /> <!-- A->C -->
+                <line x1="170" y1="190" x2="300" y2="190" class="arrow" /> <!-- B->D -->
+                <line x1="170" y1="190" x2="300" y2="300" class="arrow" /> <!-- B->E -->
+                <line x1="420" y1="80" x2="550" y2="130" class="arrow" /> <!-- C->H -->
+                <line x1="420" y1="190" x2="550" y2="130" class="arrow" /> <!-- D->H -->
+                <line x1="420" y1="300" x2="550" y2="300" class="arrow" /> <!-- E->G -->
                 
-                <!-- CRITICAL PATH CONNECTIONS (Red) -->
-                <!-- F -> G -->
+                <!-- CRITICAL PATH (F -> G) -->
                 <path d="M 170 300 C 230 300, 480 300, 550 300" fill="none" class="critical-arrow" />
 
                 <!-- NODES -->
-
                 <!-- NODE A -->
                 <g transform="translate(50, 50)">
                     <rect x="0" y="0" width="120" height="60" class="node-rect" />
@@ -245,14 +278,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">0</text>
-                    <text x="60" y="15" text-anchor="middle">6</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">6</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">0</text><text x="60" y="15" text-anchor="middle">6</text><text x="100" y="15" text-anchor="middle" class="text-ef">6</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name">A</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">2</text>
-                    <text x="60" y="55" text-anchor="middle">2</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">8</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">2</text><text x="60" y="55" text-anchor="middle">2</text><text x="100" y="55" text-anchor="middle" class="text-lf">8</text>
                 </g>
 
                 <!-- NODE B -->
@@ -263,14 +291,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">0</text>
-                    <text x="60" y="15" text-anchor="middle">4</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">4</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">0</text><text x="60" y="15" text-anchor="middle">4</text><text x="100" y="15" text-anchor="middle" class="text-ef">4</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name">B</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">3</text>
-                    <text x="60" y="55" text-anchor="middle">3</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">7</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">3</text><text x="60" y="55" text-anchor="middle">3</text><text x="100" y="55" text-anchor="middle" class="text-lf">7</text>
                 </g>
 
                 <!-- NODE F (CRITICAL) -->
@@ -281,14 +304,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">0</text>
-                    <text x="60" y="15" text-anchor="middle">10</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">10</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">0</text><text x="60" y="15" text-anchor="middle">10</text><text x="100" y="15" text-anchor="middle" class="text-ef">10</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name critical-text">F</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">0</text>
-                    <text x="60" y="55" text-anchor="middle" class="critical-text">0</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">10</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">0</text><text x="60" y="55" text-anchor="middle" class="critical-text">0</text><text x="100" y="55" text-anchor="middle" class="text-lf">10</text>
                 </g>
 
                 <!-- NODE C -->
@@ -299,14 +317,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">6</text>
-                    <text x="60" y="15" text-anchor="middle">3</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">9</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">6</text><text x="60" y="15" text-anchor="middle">3</text><text x="100" y="15" text-anchor="middle" class="text-ef">9</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name">C</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">8</text>
-                    <text x="60" y="55" text-anchor="middle">2</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">11</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">8</text><text x="60" y="55" text-anchor="middle">2</text><text x="100" y="55" text-anchor="middle" class="text-lf">11</text>
                 </g>
 
                 <!-- NODE D -->
@@ -317,14 +330,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">4</text>
-                    <text x="60" y="15" text-anchor="middle">4</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">8</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">4</text><text x="60" y="15" text-anchor="middle">4</text><text x="100" y="15" text-anchor="middle" class="text-ef">8</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name">D</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">7</text>
-                    <text x="60" y="55" text-anchor="middle">3</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">11</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">7</text><text x="60" y="55" text-anchor="middle">3</text><text x="100" y="55" text-anchor="middle" class="text-lf">11</text>
                 </g>
 
                 <!-- NODE E -->
@@ -335,14 +343,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">4</text>
-                    <text x="60" y="15" text-anchor="middle">3</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">7</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">4</text><text x="60" y="15" text-anchor="middle">3</text><text x="100" y="15" text-anchor="middle" class="text-ef">7</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name">E</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">7</text>
-                    <text x="60" y="55" text-anchor="middle">3</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">10</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">7</text><text x="60" y="55" text-anchor="middle">3</text><text x="100" y="55" text-anchor="middle" class="text-lf">10</text>
                 </g>
 
                 <!-- NODE H -->
@@ -353,14 +356,9 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">9</text>
-                    <text x="60" y="15" text-anchor="middle">2</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">11</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">9</text><text x="60" y="15" text-anchor="middle">2</text><text x="100" y="15" text-anchor="middle" class="text-ef">11</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name">H</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">11</text>
-                    <text x="60" y="55" text-anchor="middle">2</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">13</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">11</text><text x="60" y="55" text-anchor="middle">2</text><text x="100" y="55" text-anchor="middle" class="text-lf">13</text>
                 </g>
 
                 <!-- NODE G (CRITICAL) -->
@@ -371,25 +369,20 @@
                     <line x1="0" y1="40" x2="120" y2="40" class="node-line" />
                     <line x1="40" y1="0" x2="40" y2="60" class="node-line" />
                     <line x1="80" y1="0" x2="80" y2="60" class="node-line" />
-                    <!-- Data -->
-                    <text x="20" y="15" text-anchor="middle" class="text-es">10</text>
-                    <text x="60" y="15" text-anchor="middle">3</text>
-                    <text x="100" y="15" text-anchor="middle" class="text-ef">13</text>
+                    <text x="20" y="15" text-anchor="middle" class="text-es">10</text><text x="60" y="15" text-anchor="middle">3</text><text x="100" y="15" text-anchor="middle" class="text-ef">13</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name critical-text">G</text>
-                    <text x="20" y="55" text-anchor="middle" class="text-ls">10</text>
-                    <text x="60" y="55" text-anchor="middle" class="critical-text">0</text>
-                    <text x="100" y="55" text-anchor="middle" class="text-lf">13</text>
+                    <text x="20" y="55" text-anchor="middle" class="text-ls">10</text><text x="60" y="55" text-anchor="middle" class="critical-text">0</text><text x="100" y="55" text-anchor="middle" class="text-lf">13</text>
                 </g>
 
             </svg>
         </div>
 
         <div style="margin-top: 20px; background: #fff5f5; border: 1px solid #e74c3c; padding: 15px; border-radius: 8px;">
-            <strong style="color: #c0392b;">Result:</strong>
-            <ul style="margin-bottom: 0;">
-                <li>The activities with <strong>Float = 0</strong> are F and G.</li>
-                <li><strong>Critical Path:</strong> Start → F → G → Finish.</li>
-                <li>Any delay in F or G will delay the entire project.</li>
+            <strong style="color: #c0392b;">Final Analysis:</strong>
+            <ul>
+                <li>The activities with <strong>Float = 0</strong> are <strong>Start → F → G → Finish</strong>.</li>
+                <li>This is the <strong>Critical Path</strong>.</li>
+                <li>Total Duration: <strong>13 Weeks</strong>.</li>
             </ul>
         </div>
 
