@@ -1,468 +1,1365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Patterns Study Notes</title>
-    <style>
-        /* --- DESIGN PATTERNS THEME (BLUE) --- */
-        :root {
-            --bg-color: #f4f6f8;
-            --text-color: #2c3e50;
-            --primary-blue: #2980b9;
-            --light-blue: #eaf2f8;
-            --border-color: #bdc3c7;
-            --code-bg: #f7f9f9;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Design Patterns Study Notes (UIU CSE 3421)</title>
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            padding: 40px 20px;
-        }
+  <style>
+    /* ===============================
+       THEME (high-contrast, consistent)
+       =============================== */
+    :root{
+      --bg: #0b1220;
+      --surface: rgba(255,255,255,.06);
+      --surface-2: rgba(255,255,255,.10);
+      --card: rgba(255,255,255,.08);
+      --border: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
 
-        .container {
-            max-width: 950px;
-            margin: 0 auto;
-            background: white;
-            padding: 50px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border-top: 8px solid var(--primary-blue);
-        }
+      --primary: #4da3ff;
+      --primary-2: #1c6dd0;
+      --accent: #7cf5d1;
+      --warn: #ffcc66;
+      --danger: #ff6b6b;
 
-        .back-link {
-            text-decoration: none;
-            color: #7f8c8d;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        .back-link:hover { color: var(--primary-blue); }
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --radius: 18px;
+    }
 
-        h1 { font-size: 2.5rem; margin-top: 10px; color: var(--primary-blue); }
-        h2 { 
-            background-color: var(--primary-blue); 
-            color: white; 
-            padding: 12px 20px; 
-            border-radius: 4px; 
-            margin-top: 50px;
-            margin-bottom: 25px;
-            font-size: 1.6rem;
-        }
-        h3 { 
-            color: #2c3e50; 
-            border-bottom: 3px solid var(--light-blue); 
-            display: inline-block; 
-            margin-top: 35px;
-            font-size: 1.3rem;
-            padding-bottom: 5px;
-        }
+    @media (prefers-color-scheme: light) {
+      :root{
+        --bg:#f6f8fc;
+        --surface:#ffffff;
+        --surface-2:#f0f4ff;
+        --card:#ffffff;
+        --border: rgba(20,30,50,.14);
+        --text:#142033;
+        --muted:#4a5a73;
 
-        p, li { font-size: 1.05rem; margin-bottom: 10px; }
-        ul { margin-left: 20px; margin-bottom: 20px; }
+        --primary:#1e66d0;
+        --primary-2:#0f4aa0;
+        --accent:#0aa387;
+        --warn:#b66b00;
+        --danger:#c93636;
 
-        /* --- UML CLASS BOX STYLING --- */
-        .uml-wrapper {
-            background-color: var(--light-blue);
-            padding: 30px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            overflow-x: auto;
-        }
+        --shadow: 0 16px 40px rgba(16, 24, 40, .12);
+      }
+    }
 
-        .uml-class {
-            background: white;
-            border: 2px solid #34495e;
-            width: 220px;
-            box-shadow: 4px 4px 0px rgba(44, 62, 80, 0.1);
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            z-index: 2;
-            position: relative;
-        }
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 10% 0%, rgba(77,163,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 95% 10%, rgba(124,245,209,.12), transparent 55%),
+        radial-gradient(900px 650px at 30% 95%, rgba(255,204,102,.10), transparent 60%),
+        var(--bg);
+      line-height: 1.65;
+      padding: 28px 18px 70px;
+    }
 
-        .uml-header {
-            background-color: #ecf0f1;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-            border-bottom: 1px solid #34495e;
-        }
+    .container{
+      max-width: 1050px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, var(--surface), rgba(255,255,255,.02));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: calc(var(--radius) + 10px);
+      overflow: hidden;
+    }
 
-        .uml-header span {
-            display: block;
-            font-size: 0.75rem;
-            font-style: italic;
-            font-weight: normal;
-        }
+    /* Top header */
+    .topbar{
+      padding: 28px 26px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(77,163,255,.16), rgba(124,245,209,.08));
+    }
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .2px;
+      font-size: .95rem;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .back-link:hover{ color: var(--text); border-color: rgba(77,163,255,.45); }
 
-        .uml-body {
-            padding: 10px;
-            text-align: left;
-        }
+    h1{
+      margin: 14px 0 8px;
+      font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+      letter-spacing: -.4px;
+    }
+    .subtitle{
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 78ch;
+    }
+    .badge-row{ margin-top: 16px; display:flex; flex-wrap:wrap; gap:10px; }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: .92rem;
+      font-weight: 700;
+      letter-spacing:.15px;
+    }
+    .dot{
+      width:9px; height:9px; border-radius:50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 4px rgba(77,163,255,.15);
+    }
+    .dot.green{ background: var(--accent); box-shadow: 0 0 0 4px rgba(124,245,209,.18); }
+    .dot.warn{ background: var(--warn); box-shadow: 0 0 0 4px rgba(255,204,102,.18); }
 
-        /* --- ARROW STYLING (THE HARD PART) --- */
-        .relation-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 40px;
-            position: relative;
-        }
+    /* Layout */
+    .content{
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 980px){
+      .content{ grid-template-columns: 1fr; }
+    }
 
-        /* Vertical Connector */
-        .connector-vertical {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* Sidebar */
+    .sidebar{
+      position: sticky;
+      top: 14px;
+      align-self: start;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .side-title{
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      letter-spacing: -.2px;
+    }
+    .side-sub{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
 
-        /* 1. Inheritance (Solid Line + Empty Triangle) */
-        .arrow-solid-up {
-            width: 2px;
-            height: 40px;
-            background-color: #34495e;
-            position: relative;
-        }
-        .arrow-solid-up::after {
-            content: '';
-            position: absolute;
-            top: -10px; /* Moves triangle to top */
-            left: -6px;
-            width: 0; 
-            height: 0; 
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-bottom: 10px solid #34495e; /* The triangle */
-        }
-        /* White fill for triangle to look hollow */
-        .arrow-solid-up::before {
-            content: '';
-            position: absolute;
-            top: -7px;
-            left: -4px;
-            width: 0; 
-            height: 0; 
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 8px solid white;
-            z-index: 1;
-        }
+    .toc a{
+      display:block;
+      text-decoration:none;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+      background: rgba(255,255,255,.02);
+    }
+    .toc a:hover{
+      color: var(--text);
+      border-color: rgba(77,163,255,.35);
+      background: rgba(77,163,255,.08);
+    }
 
-        /* 2. Implementation (Dashed Line + Empty Triangle) */
-        .arrow-dashed-up {
-            width: 0;
-            height: 40px;
-            border-left: 2px dashed #34495e;
-            position: relative;
-        }
-        /* Reuse the triangle logic */
-        .arrow-dashed-up::after {
-            content: '';
-            position: absolute;
-            top: -10px; left: -8px;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-bottom: 10px solid #34495e;
-        }
-        .arrow-dashed-up::before {
-            content: '';
-            position: absolute;
-            top: -7px; left: -6px;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 8px solid white;
-            z-index: 1;
-        }
+    .mini{
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .93rem;
+    }
 
-        /* 3. Dependency (Dashed Line + Open Arrow) */
-        .arrow-dependency-right {
-            height: 2px;
-            width: 50px;
-            border-top: 2px dashed #34495e;
-            position: relative;
-            margin-top: 20px; /* Center with box */
-        }
-        .arrow-dependency-right::after {
-            content: '';
-            position: absolute;
-            right: -5px;
-            top: -5px;
-            border: solid #34495e;
-            border-width: 0 2px 2px 0;
-            display: inline-block;
-            padding: 3px;
-            transform: rotate(-45deg);
-        }
+    /* Main sections */
+    .main{
+      display:flex;
+      flex-direction: column;
+      gap: 18px;
+    }
 
-        /* Grid for multiple subclasses */
-        .subclass-row {
-            display: flex;
-            gap: 20px;
-            margin-top: 0;
-        }
+    .section-title{
+      margin: 0;
+      font-size: 1.55rem;
+      letter-spacing: -.3px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(77,163,255,.18), rgba(255,255,255,.02));
+    }
 
-        /* Definitions Box */
-        .def-box {
-            background: #fdf2e9;
-            border-left: 5px solid #e67e22;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .def-title { color: #e67e22; font-weight: bold; display: block; margin-bottom: 5px; }
+    .pattern-card{
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.02));
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      overflow:hidden;
+    }
 
-    </style>
+    .pattern-head{
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      flex-wrap:wrap;
+      justify-content: space-between;
+      gap: 10px;
+      background: rgba(255,255,255,.03);
+    }
+    .pattern-name{
+      margin:0;
+      font-size: 1.35rem;
+      letter-spacing: -.25px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      font-size: .85rem;
+      color: rgba(255,255,255,.88);
+      border: 1px solid rgba(77,163,255,.35);
+      background: rgba(77,163,255,.10);
+      padding: 7px 10px;
+      border-radius: 999px;
+    }
+    @media (prefers-color-scheme: light){
+      .pill{ color: #0f2a55; }
+    }
+
+    .pattern-body{
+      padding: 16px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+    }
+    @media (max-width: 980px){
+      .pattern-body{ grid-template-columns: 1fr; }
+    }
+
+    .callout{
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 14px;
+    }
+    .callout h4{
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      letter-spacing: -.2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .icon{
+      width: 22px; height: 22px;
+      border-radius: 8px;
+      background: rgba(77,163,255,.18);
+      border: 1px solid rgba(77,163,255,.28);
+      display:inline-flex; align-items:center; justify-content:center;
+      font-weight: 1000;
+      color: var(--primary);
+      font-family: var(--mono);
+    }
+    .callout p{ margin: 0 0 8px; color: var(--muted); }
+    .callout ul{ margin: 10px 0 0 18px; color: var(--muted); }
+    .callout li{ margin: 6px 0; }
+
+    .two-col{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 520px){
+      .two-col{ grid-template-columns: 1fr; }
+    }
+
+    /* Code */
+    pre{
+      margin: 0;
+      padding: 12px 12px;
+      overflow:auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.15));
+      color: rgba(255,255,255,.90);
+      font-family: var(--mono);
+      font-size: .92rem;
+      line-height: 1.55;
+    }
+    @media (prefers-color-scheme: light){
+      pre{
+        background: linear-gradient(180deg, rgba(30,60,120,.06), rgba(0,0,0,.02));
+        color: #15243a;
+      }
+    }
+    code{ font-family: var(--mono); }
+
+    /* Diagrams */
+    .diagram-wrap{
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(900px 260px at 40% 0%, rgba(77,163,255,.10), transparent 60%),
+        rgba(255,255,255,.03);
+      padding: 12px;
+      overflow:auto;
+    }
+    figure{ margin: 0; }
+    figcaption{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    /* SVG UML styling (thick lines + crisp arrows) */
+    .uml{
+      width: 100%;
+      min-width: 660px; /* allows scroll on small screens so it stays readable */
+      height: auto;
+      display:block;
+    }
+    .uml .box{
+      fill: rgba(255,255,255,.92);
+      stroke: rgba(20,30,50,.85);
+      stroke-width: 2.2;
+      rx: 10; ry: 10;
+    }
+    @media (prefers-color-scheme: dark){
+      .uml .box{
+        fill: rgba(255,255,255,.95);
+        stroke: rgba(10,18,30,.85);
+      }
+    }
+    .uml .title{
+      font-family: var(--sans);
+      font-weight: 900;
+      font-size: 14px;
+      fill: #0c1628;
+    }
+    .uml .stereo{
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 12px;
+      fill: #3a4b63;
+    }
+    .uml .body{
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 12px;
+      fill: #1a2a44;
+    }
+    .uml .sep{
+      stroke: rgba(20,30,50,.55);
+      stroke-width: 1.6;
+    }
+    .uml .line{
+      stroke: rgba(20,30,50,.85);
+      stroke-width: 2.6;
+      fill: none;
+    }
+    .uml .dashed{
+      stroke-dasharray: 8 6;
+    }
+    .uml .label{
+      font-family: var(--sans);
+      font-weight: 900;
+      font-size: 12px;
+      fill: #1a2a44;
+    }
+
+    /* Legend */
+    .legend-card{
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+    .legend-card h3{
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      letter-spacing: -.25px;
+    }
+    .legend-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .legend-item{
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    .legend-item strong{ display:block; margin-bottom: 3px; }
+    .legend-item span{ color: var(--muted); display:block; font-size:.95rem; }
+
+    .legend-svg{
+      width: 110px; height: 36px;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+    }
+
+    /* Print */
+    @media print{
+      body{ background: white; padding: 0; }
+      .container{ box-shadow:none; border:none; border-radius:0; }
+      .sidebar{ display:none; }
+      .content{ grid-template-columns: 1fr; }
+      .pattern-card, .legend-card{ break-inside: avoid; }
+      a{ color: black; text-decoration:none; }
+    }
+  </style>
 </head>
+
 <body>
-
-    <div class="container">
-        <a href="index.html" class="back-link">← Back to Syllabus</a>
-        
-        <h1>Design Patterns (GoF)</h1>
-        <p>A standard solution to a common programming problem. It ensures <strong>loose coupling</strong> and increases understandability.</p>
-        
-        <!-- UML LEGEND -->
-        <div style="background:#333; color:white; padding:15px; border-radius:5px; margin-bottom:30px;">
-            <strong>UML Legend (Crucial for Diagrams):</strong>
-            <ul style="margin-bottom:0; font-size:0.9rem;">
-                <li><strong>Solid Line + Hollow Triangle:</strong> Generalization (Inheritance/Extends)</li>
-                <li><strong>Dashed Line + Hollow Triangle:</strong> Realization (Implements Interface)</li>
-                <li><strong>Dashed Line + Open Arrow:</strong> Dependency ("Uses")</li>
-                <li><strong>Solid Line + Diamond:</strong> Composition/Aggregation ("Has a")</li>
-            </ul>
-        </div>
-
-        <hr>
-
-        <!-- ======================= CREATIONAL ======================= -->
-        <h2>1. Creational Patterns</h2>
-        <p>Concerned with how objects are instantiated.</p>
-
-        <!-- FACTORY METHOD -->
-        <h3>A. Factory Method</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Defines an interface for creating an object but lets subclasses decide which class to instantiate.
-            <br><em>Motivation:</em> Removes the instantiation of actual implementation classes from client code.
-        </div>
-
-        <div class="uml-wrapper">
-            <!-- Interface -->
-            <div class="uml-class">
-                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>Shape</div>
-                <div class="uml-body">+ draw()</div>
-            </div>
-
-            <!-- Arrow: Implementation (Dashed) -->
-            <div class="subclass-row" style="width: 100%; justify-content: center; gap: 100px;">
-                 <div class="arrow-dashed-up"></div>
-                 <div class="arrow-dashed-up"></div>
-            </div>
-
-            <!-- Concrete Classes -->
-            <div class="subclass-row">
-                <div class="uml-class">
-                    <div class="uml-header">Circle</div>
-                    <div class="uml-body">+ draw()</div>
-                </div>
-                <div class="uml-class">
-                    <div class="uml-header">Rectangle</div>
-                    <div class="uml-body">+ draw()</div>
-                </div>
-            </div>
-
-            <p style="margin-top: 20px; font-weight:bold;">The Factory:</p>
-            <!-- The Factory Class -->
-            <div class="uml-class" style="border-color: #e74c3c;">
-                <div class="uml-header">ShapeFactory</div>
-                <div class="uml-body">+ getShape(type): Shape</div>
-            </div>
-        </div>
-        <p><strong>Consequences:</strong> Makes code more robust. You can add a "Triangle" later without breaking the Client code.</p>
-
-        <!-- ABSTRACT FACTORY -->
-        <h3>B. Abstract Factory</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Provide an interface for creating <strong>families</strong> of related or dependent objects (Factory of Factories).
-        </div>
-        <p><strong>Example:</strong> A <code>VehicleFactory</code> that produces unrelated parts (Wheels, Engine) that must fit together for a specific Car Model.</p>
-        <ul>
-            <li><strong>Client:</strong> Asks <code>FactoryProducer</code> for a factory.</li>
-            <li><strong>AbstractFactory:</strong> Interface for <code>getShape()</code> and <code>getColor()</code>.</li>
-            <li><strong>Concrete Factories:</strong> <code>PaintFactory</code> (creates shapes/colors) vs <code>AnimationFactory</code>.</li>
-        </ul>
-
-        <!-- SINGLETON -->
-        <h3>C. Singleton</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Ensures a class has only <strong>one instance</strong> and provides a global point of access to it.
-        </div>
-        
-        <div class="uml-wrapper">
-            <div class="uml-class">
-                <div class="uml-header">DbConnection</div>
-                <div class="uml-body">
-                    - static instance: DbConnection<br>
-                    <span style="color:#c0392b;">- DbConnection()</span> (Private!)<br>
-                    + static getInstance(): DbConnection
-                </div>
-            </div>
-            <div style="display:flex; align-items:center;">
-                <div class="arrow-dependency-right"></div>
-                <div class="uml-class" style="width: 100px; text-align:center;">Client</div>
-            </div>
-        </div>
-        <p><strong>Key Code concept:</strong> The constructor is <code>private</code> so no one else can say <code>new DbConnection()</code>. They must use <code>getInstance()</code>.</p>
-
-
-        <!-- ======================= STRUCTURAL ======================= -->
-        <h2>2. Structural Patterns</h2>
-        <p>Concerned with how classes and objects are composed (combined).</p>
-
-        <!-- ADAPTER -->
-        <h3>A. Adapter Pattern</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Converts the interface of a class into another interface the clients expect.
-            <br><em>Analogy:</em> A Travel Plug Adapter (US Plug into EU Socket).
-        </div>
-
-        <div class="uml-wrapper">
-            <div class="relation-group">
-                <div class="uml-class" style="width:120px;">Client</div>
-                <div class="arrow-dependency-right"></div>
-                <div class="uml-class">
-                    <div class="uml-header">Adapter</div>
-                    <div class="uml-body">
-                        + request()<br>
-                        <em>(calls adaptee.specificRequest)</em>
-                    </div>
-                </div>
-                <div class="arrow-dependency-right"></div>
-                <div class="uml-class">
-                    <div class="uml-header">Adaptee</div>
-                    <div class="uml-body">+ specificRequest()</div>
-                </div>
-            </div>
-        </div>
-        <p><strong>Practice Problem:</strong> Video Player. System plays mp4/vlc. Client wants to play mp3 (audio). Use an <code>AudioAdapter</code> to translate the request.</p>
-
-
-        <!-- DECORATOR -->
-        <h3>B. Decorator Pattern</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Attaches additional responsibilities to an object dynamically. An alternative to subclassing for extending functionality.
-            <br><em>Principle:</em> Open for Extension, Closed for Modification.
-        </div>
-        <p><strong>Structure:</strong> A Decorator <em>is a</em> Shape (Inheritance) AND <em>has a</em> Shape (Composition).</p>
-        
-        <div class="uml-wrapper">
-            <!-- Interface -->
-            <div class="uml-class">
-                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>Shape</div>
-                <div class="uml-body">+ draw()</div>
-            </div>
-
-            <!-- Relationships -->
-            <div class="subclass-row" style="gap: 150px;">
-                 <div class="arrow-dashed-up"></div> <!-- Circle implements Shape -->
-                 <div class="arrow-dashed-up"></div> <!-- Decorator implements Shape -->
-            </div>
-
-            <div class="subclass-row">
-                <div class="uml-class">
-                    <div class="uml-header">Circle</div>
-                    <div class="uml-body">+ draw()</div>
-                </div>
-                <div class="uml-class">
-                    <div class="uml-header">ShapeDecorator</div>
-                    <div class="uml-body">
-                        - shape: Shape<br>
-                        + draw() { shape.draw() }
-                    </div>
-                </div>
-            </div>
-            
-            <div class="arrow-solid-up"></div>
-
-            <div class="uml-class">
-                <div class="uml-header">RedBorderDecorator</div>
-                <div class="uml-body">
-                    + draw() { <br>
-                    &nbsp;&nbsp;super.draw();<br>
-                    &nbsp;&nbsp;setRedBorder();<br>
-                    }
-                </div>
-            </div>
-        </div>
-
-
-        <!-- ======================= BEHAVIORAL ======================= -->
-        <h2>3. Behavioral Patterns</h2>
-        <p>Concerned with communication between objects.</p>
-
-        <!-- STATE -->
-        <h3>A. State Pattern</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Allows an object to alter its behavior when its internal state changes. The object will appear to change its class.
-        </div>
-        <p><strong>Example:</strong> Traffic Light (Red state vs Green state behavior) or TV Remote.</p>
-        
-        <div class="uml-wrapper">
-            <div class="uml-class">
-                <div class="uml-header">Context (Remote)</div>
-                <div class="uml-body">
-                    - state: State<br>
-                    + pressButton() {<br>
-                    &nbsp;&nbsp;state.doAction()<br>
-                    }
-                </div>
-            </div>
-            <div class="arrow-dependency-right"></div>
-            <div class="uml-class">
-                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>State</div>
-                <div class="uml-body">+ doAction()</div>
-            </div>
-        </div>
-
-        <!-- STRATEGY -->
-        <h3>B. Strategy Pattern</h3>
-        <div class="def-box">
-            <span class="def-title">Definition</span>
-            Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.
-        </div>
-        <p><strong>Example:</strong> Sorting Algorithms or Payment Methods.</p>
-        
-        <div class="uml-wrapper">
-             <div class="uml-class">
-                <div class="uml-header"><span>&lt;&lt;interface&gt;&gt;</span>Strategy</div>
-                <div class="uml-body">+ execute(a, b)</div>
-            </div>
-
-            <div class="subclass-row" style="gap: 50px;">
-                <div class="arrow-dashed-up"></div>
-                <div class="arrow-dashed-up"></div>
-                <div class="arrow-dashed-up"></div>
-            </div>
-
-            <div class="subclass-row">
-                <div class="uml-class" style="width:150px">AddStrategy</div>
-                <div class="uml-class" style="width:150px">SubStrategy</div>
-                <div class="uml-class" style="width:150px">MulStrategy</div>
-            </div>
-        </div>
-        <p><strong>Practice Problem:</strong> Sorting an array. Client wants to find the 2nd largest number. You can swap between <code>BubbleSort</code>, <code>QuickSort</code>, etc., without changing the client code.</p>
-
+  <div class="container">
+    <div class="topbar">
+      <a href="index.html" class="back-link" aria-label="Back to Syllabus">← Back to Syllabus</a>
+      <h1>Design Patterns (GoF) — Study Notes</h1>
+      <p class="subtitle">
+        Clear, exam-friendly notes + accurate UML diagrams (SVG) for the patterns covered in your UIU CSE 3421 slides:
+        Factory Method, Abstract Factory, Singleton, Adapter, Decorator, State, Strategy.
+      </p>
+      <div class="badge-row">
+        <div class="badge"><span class="dot"></span> High visibility + consistent layout</div>
+        <div class="badge"><span class="dot green"></span> UML arrows are SVG (crisp at any zoom)</div>
+        <div class="badge"><span class="dot warn"></span> Includes “when to use + consequences + mini code”</div>
+      </div>
     </div>
 
+    <div class="content">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <h2 class="side-title">Quick Navigation</h2>
+        <p class="side-sub">Jump to patterns + UML legend.</p>
+
+        <nav class="toc" aria-label="Table of contents">
+          <a href="#uml-legend">UML Legend</a>
+          <a href="#creational">Creational Patterns</a>
+          <a href="#factory-method">Factory Method</a>
+          <a href="#abstract-factory">Abstract Factory</a>
+          <a href="#singleton">Singleton</a>
+          <a href="#structural">Structural Patterns</a>
+          <a href="#adapter">Adapter</a>
+          <a href="#decorator">Decorator</a>
+          <a href="#behavioral">Behavioral Patterns</a>
+          <a href="#state">State</a>
+          <a href="#strategy">Strategy</a>
+        </nav>
+
+        <div class="mini">
+          <strong>Tip:</strong> On mobile, diagrams scroll horizontally so they stay readable (no tiny boxes).
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+
+        <!-- UML LEGEND -->
+        <section id="uml-legend" class="legend-card">
+          <h3>UML Legend (Exam-Crucial)</h3>
+
+          <div class="legend-grid">
+            <div class="legend-item">
+              <svg class="legend-svg" viewBox="0 0 120 40" role="img" aria-label="Generalization arrow">
+                <defs>
+                  <marker id="triHollowL1" markerWidth="14" markerHeight="10" refX="12" refY="5" orient="auto">
+                    <path d="M0,5 L12,0 L12,10 Z" fill="white" stroke="#12233c" stroke-width="2"/>
+                  </marker>
+                </defs>
+                <line x1="10" y1="20" x2="110" y2="20" stroke="#12233c" stroke-width="3" marker-end="url(#triHollowL1)"/>
+              </svg>
+              <div>
+                <strong>Generalization (Inheritance / Extends)</strong>
+                <span>Solid line + hollow triangle → subclass “is-a” superclass.</span>
+              </div>
+            </div>
+
+            <div class="legend-item">
+              <svg class="legend-svg" viewBox="0 0 120 40" role="img" aria-label="Realization arrow">
+                <defs>
+                  <marker id="triHollowL2" markerWidth="14" markerHeight="10" refX="12" refY="5" orient="auto">
+                    <path d="M0,5 L12,0 L12,10 Z" fill="white" stroke="#12233c" stroke-width="2"/>
+                  </marker>
+                </defs>
+                <line x1="10" y1="20" x2="110" y2="20" stroke="#12233c" stroke-width="3" stroke-dasharray="8 6"
+                      marker-end="url(#triHollowL2)"/>
+              </svg>
+              <div>
+                <strong>Realization (Implements Interface)</strong>
+                <span>Dashed line + hollow triangle → class implements interface.</span>
+              </div>
+            </div>
+
+            <div class="legend-item">
+              <svg class="legend-svg" viewBox="0 0 120 40" role="img" aria-label="Dependency arrow">
+                <defs>
+                  <marker id="arrowOpenL3" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+                    <path d="M0,7 L12,1 M0,7 L12,13" fill="none" stroke="#12233c" stroke-width="2.6" stroke-linecap="round"/>
+                  </marker>
+                </defs>
+                <line x1="10" y1="20" x2="110" y2="20" stroke="#12233c" stroke-width="3" stroke-dasharray="8 6"
+                      marker-end="url(#arrowOpenL3)"/>
+              </svg>
+              <div>
+                <strong>Dependency (“uses”)</strong>
+                <span>Dashed line + open arrow → A uses B (temporarily/calls methods).</span>
+              </div>
+            </div>
+
+            <div class="legend-item">
+              <svg class="legend-svg" viewBox="0 0 120 40" role="img" aria-label="Aggregation/Composition example">
+                <defs>
+                  <marker id="diamondWhite" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+                    <path d="M2,7 L7,2 L12,7 L7,12 Z" fill="white" stroke="#12233c" stroke-width="2"/>
+                  </marker>
+                  <marker id="diamondBlack" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+                    <path d="M2,7 L7,2 L12,7 L7,12 Z" fill="#12233c" stroke="#12233c" stroke-width="2"/>
+                  </marker>
+                </defs>
+                <line x1="10" y1="14" x2="110" y2="14" stroke="#12233c" stroke-width="3" marker-end="url(#diamondWhite)"/>
+                <line x1="10" y1="28" x2="110" y2="28" stroke="#12233c" stroke-width="3" marker-end="url(#diamondBlack)"/>
+              </svg>
+              <div>
+                <strong>Aggregation vs Composition (“has-a”)</strong>
+                <span>White diamond = part-of (weaker). Black diamond = entirely made-of (stronger).</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CREATIONAL -->
+        <h2 id="creational" class="section-title">1) Creational Patterns</h2>
+
+        <!-- Factory Method -->
+        <section id="factory-method" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">A. Factory Method</h3>
+            <div class="pill">Creational • Object creation</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Defines an interface for creating related classes; a factory takes responsibility for
+                instantiation, so the client doesn’t directly create concrete objects.
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>Client should not know concrete class names.</li>
+                    <li>You want easy extension (add new product types).</li>
+                    <li>You want loose coupling between client and implementations.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">+</span> Consequences</h4>
+                  <ul>
+                    <li>Less coupled, more robust & extendable.</li>
+                    <li>Adding a new class (e.g., <code>Triangle</code>) avoids client changes.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code (Java-like)</h4>
+<pre><code>interface Shape { void draw(); }
+
+class Circle implements Shape { public void draw(){ /*...*/ } }
+class Rectangle implements Shape { public void draw(){ /*...*/ } }
+
+class ShapeFactory {
+  public Shape getShape(String type){
+    if(type.equals("circle")) return new Circle();
+    if(type.equals("rect"))   return new Rectangle();
+    return null;
+  }
+}
+
+// Client
+Shape s = new ShapeFactory().getShape("circle");
+s.draw();</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 900 420" role="img" aria-label="Factory Method UML">
+                  <defs>
+                    <marker id="triHollowFM" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+                      <path d="M0,6 L14,0 L14,12 Z" fill="white" stroke="#12233c" stroke-width="2.4"/>
+                    </marker>
+                    <marker id="arrowOpenFM" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M0,8 L14,2 M0,8 L14,14" fill="none" stroke="#12233c" stroke-width="2.8" stroke-linecap="round"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Interface Shape -->
+                  <rect class="box" x="350" y="30" width="200" height="92"></rect>
+                  <text class="stereo" x="450" y="52" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="450" y="74" text-anchor="middle">Shape</text>
+                  <line class="sep" x1="350" y1="84" x2="550" y2="84"></line>
+                  <text class="body" x="370" y="106">+ draw()</text>
+
+                  <!-- Concrete Circle -->
+                  <rect class="box" x="140" y="190" width="200" height="88"></rect>
+                  <text class="title" x="240" y="218" text-anchor="middle">Circle</text>
+                  <line class="sep" x1="140" y1="228" x2="340" y2="228"></line>
+                  <text class="body" x="160" y="250">+ draw()</text>
+
+                  <!-- Concrete Rectangle -->
+                  <rect class="box" x="350" y="190" width="200" height="88"></rect>
+                  <text class="title" x="450" y="218" text-anchor="middle">Rectangle</text>
+                  <line class="sep" x1="350" y1="228" x2="550" y2="228"></line>
+                  <text class="body" x="370" y="250">+ draw()</text>
+
+                  <!-- Concrete Square (slides also show Square in example sets) -->
+                  <rect class="box" x="560" y="190" width="200" height="88"></rect>
+                  <text class="title" x="660" y="218" text-anchor="middle">Square</text>
+                  <line class="sep" x1="560" y1="228" x2="760" y2="228"></line>
+                  <text class="body" x="580" y="250">+ draw()</text>
+
+                  <!-- Realization arrows (dashed + hollow triangle) -->
+                  <path class="line dashed" d="M240 190 L240 140 L450 140 L450 122" marker-end="url(#triHollowFM)"></path>
+                  <path class="line dashed" d="M450 190 L450 122" marker-end="url(#triHollowFM)"></path>
+                  <path class="line dashed" d="M660 190 L660 140 L450 140 L450 122" marker-end="url(#triHollowFM)"></path>
+
+                  <!-- Factory -->
+                  <rect class="box" x="350" y="315" width="260" height="92"></rect>
+                  <text class="title" x="480" y="342" text-anchor="middle">ShapeFactory</text>
+                  <line class="sep" x1="350" y1="352" x2="610" y2="352"></line>
+                  <text class="body" x="370" y="374">+ getShape(type): Shape</text>
+
+                  <!-- Client -->
+                  <rect class="box" x="40" y="315" width="200" height="92"></rect>
+                  <text class="title" x="140" y="342" text-anchor="middle">Client (Painter)</text>
+                  <line class="sep" x1="40" y1="352" x2="240" y2="352"></line>
+                  <text class="body" x="60" y="374">+ main()</text>
+
+                  <!-- Dependencies -->
+                  <path class="line dashed" d="M240 360 L350 360" marker-end="url(#arrowOpenFM)"></path>
+                  <text class="label" x="295" y="350" text-anchor="middle">uses</text>
+
+                  <path class="line dashed" d="M240 330 L350 90" marker-end="url(#arrowOpenFM)"></path>
+                  <text class="label" x="310" y="210" transform="rotate(-35 310 210)">requests Shape</text>
+                </svg>
+
+                <figcaption>
+                  UML matches your lecture flow: client asks factory for a <code>Shape</code>,
+                  factory decides concrete type, client only depends on abstractions.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- Abstract Factory -->
+        <section id="abstract-factory" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">B. Abstract Factory</h3>
+            <div class="pill">Creational • Factory of factories</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Provides an interface for creating <strong>families</strong> of related objects.
+                Each concrete factory creates products that are meant to work together.
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>You need “matching sets” of objects (family consistency).</li>
+                    <li>You want to swap entire families easily (e.g., <code>PaintFactory</code> vs <code>AnimationFactory</code>).</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">+</span> Consequences</h4>
+                  <ul>
+                    <li>Isolates concrete classes from client.</li>
+                    <li>Promotes consistency among products.</li>
+                    <li>Easy to extend with new families.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code (Java-like)</h4>
+<pre><code>interface AbstractFactory {
+  Shape getShape(String type);
+  Color getColor(String name);
+}
+
+class PaintFactory implements AbstractFactory { /* returns Paint-family objects */ }
+class AnimationFactory implements AbstractFactory { /* returns Animation-family objects */ }
+
+class FactoryProducer {
+  static AbstractFactory getFactory(String which){
+    return which.equals("paint") ? new PaintFactory() : new AnimationFactory();
+  }
+}</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 980 520" role="img" aria-label="Abstract Factory UML">
+                  <defs>
+                    <marker id="triHollowAF" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+                      <path d="M0,6 L14,0 L14,12 Z" fill="white" stroke="#12233c" stroke-width="2.4"/>
+                    </marker>
+                    <marker id="arrowOpenAF" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M0,8 L14,2 M0,8 L14,14" fill="none" stroke="#12233c" stroke-width="2.8" stroke-linecap="round"/>
+                    </marker>
+                  </defs>
+
+                  <!-- AbstractFactory -->
+                  <rect class="box" x="390" y="24" width="240" height="110"></rect>
+                  <text class="stereo" x="510" y="48" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="510" y="72" text-anchor="middle">AbstractFactory</text>
+                  <line class="sep" x1="390" y1="82" x2="630" y2="82"></line>
+                  <text class="body" x="410" y="104">+ getShape(type): Shape</text>
+                  <text class="body" x="410" y="124">+ getColor(name): Color</text>
+
+                  <!-- Concrete factories -->
+                  <rect class="box" x="180" y="180" width="240" height="90"></rect>
+                  <text class="title" x="300" y="208" text-anchor="middle">PaintFactory</text>
+                  <line class="sep" x1="180" y1="218" x2="420" y2="218"></line>
+                  <text class="body" x="200" y="242">+ getShape()</text>
+                  <text class="body" x="200" y="260">+ getColor()</text>
+
+                  <rect class="box" x="600" y="180" width="260" height="90"></rect>
+                  <text class="title" x="730" y="208" text-anchor="middle">AnimationFactory</text>
+                  <line class="sep" x1="600" y1="218" x2="860" y2="218"></line>
+                  <text class="body" x="620" y="242">+ getShape()</text>
+                  <text class="body" x="620" y="260">+ getColor()</text>
+
+                  <!-- Realization to AbstractFactory -->
+                  <path class="line dashed" d="M300 180 L300 140 L510 140 L510 136" marker-end="url(#triHollowAF)"></path>
+                  <path class="line dashed" d="M730 180 L730 140 L510 140 L510 136" marker-end="url(#triHollowAF)"></path>
+
+                  <!-- Shape interface -->
+                  <rect class="box" x="120" y="320" width="200" height="92"></rect>
+                  <text class="stereo" x="220" y="342" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="220" y="366" text-anchor="middle">Shape</text>
+                  <line class="sep" x1="120" y1="376" x2="320" y2="376"></line>
+                  <text class="body" x="140" y="398">+ draw()</text>
+
+                  <!-- Color interface -->
+                  <rect class="box" x="660" y="320" width="200" height="92"></rect>
+                  <text class="stereo" x="760" y="342" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="760" y="366" text-anchor="middle">Color</text>
+                  <line class="sep" x1="660" y1="376" x2="860" y2="376"></line>
+                  <text class="body" x="680" y="398">+ fill()</text>
+
+                  <!-- Concrete Shapes -->
+                  <rect class="box" x="40" y="440" width="200" height="70"></rect>
+                  <text class="title" x="140" y="468" text-anchor="middle">Circle</text>
+
+                  <rect class="box" x="260" y="440" width="200" height="70"></rect>
+                  <text class="title" x="360" y="468" text-anchor="middle">Square</text>
+
+                  <!-- Concrete Colors -->
+                  <rect class="box" x="580" y="440" width="170" height="70"></rect>
+                  <text class="title" x="665" y="468" text-anchor="middle">Red</text>
+
+                  <rect class="box" x="770" y="440" width="170" height="70"></rect>
+                  <text class="title" x="855" y="468" text-anchor="middle">Green</text>
+
+                  <!-- Realization shapes -->
+                  <path class="line dashed" d="M140 440 L140 420 L220 420 L220 412" marker-end="url(#triHollowAF)"></path>
+                  <path class="line dashed" d="M360 440 L360 420 L220 420 L220 412" marker-end="url(#triHollowAF)"></path>
+
+                  <!-- Realization colors -->
+                  <path class="line dashed" d="M665 440 L665 420 L760 420 L760 412" marker-end="url(#triHollowAF)"></path>
+                  <path class="line dashed" d="M855 440 L855 420 L760 420 L760 412" marker-end="url(#triHollowAF)"></path>
+
+                  <!-- FactoryProducer -->
+                  <rect class="box" x="390" y="320" width="240" height="92"></rect>
+                  <text class="title" x="510" y="348" text-anchor="middle">FactoryProducer</text>
+                  <line class="sep" x1="390" y1="358" x2="630" y2="358"></line>
+                  <text class="body" x="410" y="380">+ getFactory(type):</text>
+                  <text class="body" x="410" y="398">  AbstractFactory</text>
+
+                  <!-- Dependencies -->
+                  <path class="line dashed" d="M510 320 L300 270" marker-end="url(#arrowOpenAF)"></path>
+                  <path class="line dashed" d="M510 320 L730 270" marker-end="url(#arrowOpenAF)"></path>
+                  <text class="label" x="510" y="300" text-anchor="middle">returns one concrete factory</text>
+
+                  <path class="line dashed" d="M300 270 L220 320" marker-end="url(#arrowOpenAF)"></path>
+                  <path class="line dashed" d="M300 270 L760 320" marker-end="url(#arrowOpenAF)"></path>
+                  <path class="line dashed" d="M730 270 L220 320" marker-end="url(#arrowOpenAF)"></path>
+                  <path class="line dashed" d="M730 270 L760 320" marker-end="url(#arrowOpenAF)"></path>
+                </svg>
+
+                <figcaption>
+                  Abstract Factory creates families: one factory gives you matching <code>Shape</code> and <code>Color</code>.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- Singleton -->
+        <section id="singleton" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">C. Singleton</h3>
+            <div class="pill">Creational • Single instance</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Ensures a class has only <strong>one instance</strong> and provides a global access point.
+                Often implemented using a <strong>private constructor</strong> + <code>getInstance()</code>.
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>Shared resource (DB connection, HTTP connection, config).</li>
+                    <li>You need lazy initialization (create only when needed).</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">!</span> Pitfalls</h4>
+                  <ul>
+                    <li>Overuse can become “global state”.</li>
+                    <li>In multithreading, needs synchronization (if applicable).</li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code</h4>
+<pre><code>class DbConnection {
+  private static DbConnection instance;
+  private DbConnection(){}
+
+  public static DbConnection getInstance(){
+    if(instance == null) instance = new DbConnection();
+    return instance;
+  }
+}</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 900 320" role="img" aria-label="Singleton UML">
+                  <defs>
+                    <marker id="arrowOpenS" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M0,8 L14,2 M0,8 L14,14" fill="none" stroke="#12233c" stroke-width="2.8" stroke-linecap="round"/>
+                    </marker>
+                  </defs>
+
+                  <rect class="box" x="270" y="70" width="360" height="170"></rect>
+                  <text class="title" x="450" y="98" text-anchor="middle">DbConnection</text>
+                  <line class="sep" x1="270" y1="110" x2="630" y2="110"></line>
+                  <text class="body" x="292" y="138">- static instance: DbConnection</text>
+                  <text class="body" x="292" y="160">- DbConnection()  // private</text>
+                  <line class="sep" x1="270" y1="178" x2="630" y2="178"></line>
+                  <text class="body" x="292" y="206">+ static getInstance(): DbConnection</text>
+
+                  <rect class="box" x="60" y="105" width="160" height="100"></rect>
+                  <text class="title" x="140" y="140" text-anchor="middle">Client</text>
+                  <line class="sep" x1="60" y1="150" x2="220" y2="150"></line>
+                  <text class="body" x="80" y="175">+ main()</text>
+
+                  <path class="line dashed" d="M220 155 L270 155" marker-end="url(#arrowOpenS)"></path>
+                  <text class="label" x="245" y="145" text-anchor="middle">uses</text>
+                </svg>
+
+                <figcaption>
+                  Key point: constructor is private, so client must call <code>getInstance()</code>.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- STRUCTURAL -->
+        <h2 id="structural" class="section-title">2) Structural Patterns</h2>
+
+        <!-- Adapter -->
+        <section id="adapter" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">A. Adapter</h3>
+            <div class="pill">Structural • Make incompatible classes work</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Helps communication between incompatible interfaces. The adapter handles the translation;
+                the client stays unaware of the complexity.
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>You have an existing class (<em>adaptee</em>) but its interface doesn’t match.</li>
+                    <li>You want to reuse legacy code without modifying it.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">E</span> Quick example</h4>
+                  <ul>
+                    <li>Travel plug: US plug ↔ EU socket</li>
+                    <li>Video player supports mp4/vlc, client wants mp3 → add <code>AudioAdapter</code></li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code</h4>
+<pre><code>// Target
+interface Socket { void powerConnection(UsPlug p); }
+
+// Adaptee
+class EuroPlug { int getPin(){ return 2; } }
+
+// Adapter (translates EuroPlug to what Socket expects)
+class SocketAdapter implements Socket {
+  private final EuroPlug euro;
+  SocketAdapter(EuroPlug euro){ this.euro = euro; }
+
+  public void powerConnection(UsPlug ignored){
+    // translate euro.getPin() -> US format (conceptually)
+  }
+}</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 980 420" role="img" aria-label="Adapter UML">
+                  <defs>
+                    <marker id="triHollowAD" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+                      <path d="M0,6 L14,0 L14,12 Z" fill="white" stroke="#12233c" stroke-width="2.4"/>
+                    </marker>
+                    <marker id="arrowOpenAD" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M0,8 L14,2 M0,8 L14,14" fill="none" stroke="#12233c" stroke-width="2.8" stroke-linecap="round"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Client -->
+                  <rect class="box" x="50" y="155" width="180" height="92"></rect>
+                  <text class="title" x="140" y="184" text-anchor="middle">Client</text>
+                  <line class="sep" x1="50" y1="194" x2="230" y2="194"></line>
+                  <text class="body" x="70" y="218">+ main()</text>
+
+                  <!-- Target Socket -->
+                  <rect class="box" x="320" y="40" width="240" height="110"></rect>
+                  <text class="stereo" x="440" y="64" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="440" y="88" text-anchor="middle">Socket</text>
+                  <line class="sep" x1="320" y1="98" x2="560" y2="98"></line>
+                  <text class="body" x="340" y="122">+ powerConnection(UsPlug)</text>
+
+                  <!-- Adapter -->
+                  <rect class="box" x="320" y="190" width="240" height="120"></rect>
+                  <text class="title" x="440" y="218" text-anchor="middle">SocketAdapter</text>
+                  <line class="sep" x1="320" y1="228" x2="560" y2="228"></line>
+                  <text class="body" x="340" y="252">- euro: EuroPlug</text>
+                  <text class="body" x="340" y="274">+ powerConnection(...)</text>
+
+                  <!-- Adaptee -->
+                  <rect class="box" x="700" y="190" width="220" height="92"></rect>
+                  <text class="title" x="810" y="218" text-anchor="middle">EuroPlug</text>
+                  <line class="sep" x1="700" y1="228" x2="920" y2="228"></line>
+                  <text class="body" x="720" y="252">+ getPin(): int</text>
+
+                  <!-- Another related type shown in slides -->
+                  <rect class="box" x="700" y="40" width="220" height="92"></rect>
+                  <text class="title" x="810" y="68" text-anchor="middle">UsPlug</text>
+                  <line class="sep" x1="700" y1="78" x2="920" y2="78"></line>
+                  <text class="body" x="720" y="102">+ getPin(): int</text>
+
+                  <!-- Realization: Adapter implements Socket -->
+                  <path class="line dashed" d="M440 190 L440 150" marker-end="url(#triHollowAD)"></path>
+
+                  <!-- Dependencies -->
+                  <path class="line dashed" d="M230 200 L320 200" marker-end="url(#arrowOpenAD)"></path>
+                  <text class="label" x="275" y="190" text-anchor="middle">uses</text>
+
+                  <path class="line dashed" d="M560 250 L700 240" marker-end="url(#arrowOpenAD)"></path>
+                  <text class="label" x="630" y="232" text-anchor="middle">wraps</text>
+
+                  <path class="line dashed" d="M560 110 L700 86" marker-end="url(#arrowOpenAD)"></path>
+                  <text class="label" x="630" y="86" text-anchor="middle">expects</text>
+                </svg>
+
+                <figcaption>
+                  Adapter pattern structure from your slides: an adapter hides incompatibility so the client can keep using the target interface.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- Decorator -->
+        <section id="decorator" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">B. Decorator</h3>
+            <div class="pill">Structural • Extend without modifying</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Add responsibilities to an object <strong>dynamically</strong> by wrapping it.
+                This respects: <strong>Open for extension, closed for modification</strong>.
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>You can’t (or shouldn’t) change existing classes.</li>
+                    <li>You want “pay-as-you-go” features (wrap only when needed).</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">E</span> Examples</h4>
+                  <ul>
+                    <li>PowerPoint: add transitions/animations gradually</li>
+                    <li>Website builder: start basic, add widgets/fonts/colors</li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code</h4>
+<pre><code>interface Shape { void draw(); }
+
+class Circle implements Shape { public void draw(){ /* base */ } }
+
+abstract class PatternDecorator implements Shape {
+  protected Shape shape;
+  PatternDecorator(Shape s){ this.shape = s; }
+  public void draw(){ shape.draw(); }
+}
+
+class ColorDecorator extends PatternDecorator {
+  ColorDecorator(Shape s){ super(s); }
+  public void draw(){ super.draw(); fillColor(); }
+  private void fillColor(){ /* extra */ }
+}</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 980 520" role="img" aria-label="Decorator UML">
+                  <defs>
+                    <marker id="triHollowDC" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+                      <path d="M0,6 L14,0 L14,12 Z" fill="white" stroke="#12233c" stroke-width="2.4"/>
+                    </marker>
+                    <marker id="diamondBlackDC" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M2,8 L8,2 L14,8 L8,14 Z" fill="#12233c" stroke="#12233c" stroke-width="2"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Shape interface -->
+                  <rect class="box" x="380" y="30" width="220" height="95"></rect>
+                  <text class="stereo" x="490" y="54" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="490" y="78" text-anchor="middle">Shape</text>
+                  <line class="sep" x1="380" y1="88" x2="600" y2="88"></line>
+                  <text class="body" x="400" y="110">+ draw()</text>
+
+                  <!-- Circle -->
+                  <rect class="box" x="110" y="190" width="220" height="80"></rect>
+                  <text class="title" x="220" y="220" text-anchor="middle">Circle</text>
+                  <line class="sep" x1="110" y1="230" x2="330" y2="230"></line>
+                  <text class="body" x="130" y="255">+ draw()</text>
+
+                  <!-- Square -->
+                  <rect class="box" x="350" y="190" width="220" height="80"></rect>
+                  <text class="title" x="460" y="220" text-anchor="middle">Square</text>
+                  <line class="sep" x1="350" y1="230" x2="570" y2="230"></line>
+                  <text class="body" x="370" y="255">+ draw()</text>
+
+                  <!-- PatternDecorator -->
+                  <rect class="box" x="610" y="175" width="300" height="120"></rect>
+                  <text class="title" x="760" y="205" text-anchor="middle">PatternDecorator</text>
+                  <line class="sep" x1="610" y1="215" x2="910" y2="215"></line>
+                  <text class="body" x="630" y="240">- shape: Shape</text>
+                  <text class="body" x="630" y="262">+ PatternDecorator(Shape)</text>
+                  <text class="body" x="630" y="284">+ draw() { shape.draw() }</text>
+
+                  <!-- Realizations -->
+                  <path class="line dashed" d="M220 190 L220 150 L490 150 L490 125" marker-end="url(#triHollowDC)"></path>
+                  <path class="line dashed" d="M460 190 L460 150 L490 150 L490 125" marker-end="url(#triHollowDC)"></path>
+                  <path class="line dashed" d="M760 175 L760 150 L490 150 L490 125" marker-end="url(#triHollowDC)"></path>
+
+                  <!-- Composition: decorator has-a Shape -->
+                  <path class="line" d="M610 240 L600 240" marker-end="url(#diamondBlackDC)"></path>
+
+                  <!-- Concrete decorators -->
+                  <rect class="box" x="610" y="340" width="300" height="75"></rect>
+                  <text class="title" x="760" y="370" text-anchor="middle">ColorDecorator</text>
+
+                  <rect class="box" x="610" y="430" width="300" height="75"></rect>
+                  <text class="title" x="760" y="460" text-anchor="middle">CrustDecorator / ToppingDecorator</text>
+
+                  <!-- Inheritance arrows (solid + hollow triangle) -->
+                  <path class="line" d="M760 340 L760 310" marker-end="url(#triHollowDC)"></path>
+                  <path class="line" d="M760 430 L760 415" marker-end="url(#triHollowDC)"></path>
+
+                  <text class="label" x="210" y="320">Concrete components</text>
+                  <text class="label" x="690" y="320">Decorators wrap Shape</text>
+                </svg>
+
+                <figcaption>
+                  Decorator “is-a Shape” (realization) AND “has-a Shape” (composition). That’s the core exam point.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- BEHAVIORAL -->
+        <h2 id="behavioral" class="section-title">3) Behavioral Patterns</h2>
+
+        <!-- State -->
+        <section id="state" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">A. State</h3>
+            <div class="pill">Behavioral • Behavior changes with state</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Allows an object to alter its behavior when its internal state changes.
+                Behavior becomes a function of state (switch at runtime).
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>Many <code>if/else</code> blocks depending on state.</li>
+                    <li>State-specific behavior should be isolated into separate classes.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">E</span> Examples</h4>
+                  <ul>
+                    <li>Remote: <code>OnState</code> vs <code>OffState</code></li>
+                    <li>Traffic light: red/green/yellow states</li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code</h4>
+<pre><code>interface SwitchState { int pressSwitch(Remote r); }
+
+class Remote {
+  private SwitchState state;
+  Remote(SwitchState s){ state = s; }
+  void setState(SwitchState s){ state = s; }
+  int pressButton(){ return state.pressSwitch(this); }
+}</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 980 470" role="img" aria-label="State Pattern UML (Remote)">
+                  <defs>
+                    <marker id="triHollowST" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+                      <path d="M0,6 L14,0 L14,12 Z" fill="white" stroke="#12233c" stroke-width="2.4"/>
+                    </marker>
+                    <marker id="arrowOpenST" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M0,8 L14,2 M0,8 L14,14" fill="none" stroke="#12233c" stroke-width="2.8" stroke-linecap="round"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Client -->
+                  <rect class="box" x="40" y="170" width="180" height="92"></rect>
+                  <text class="title" x="130" y="198" text-anchor="middle">Client</text>
+                  <line class="sep" x1="40" y1="208" x2="220" y2="208"></line>
+                  <text class="body" x="60" y="232">+ main()</text>
+
+                  <!-- Context -->
+                  <rect class="box" x="280" y="130" width="320" height="165"></rect>
+                  <text class="title" x="440" y="158" text-anchor="middle">Remote (Context)</text>
+                  <line class="sep" x1="280" y1="168" x2="600" y2="168"></line>
+                  <text class="body" x="300" y="194">- state: SwitchState</text>
+                  <text class="body" x="300" y="216">+ setState(SwitchState)</text>
+                  <text class="body" x="300" y="238">+ getState(): SwitchState</text>
+                  <text class="body" x="300" y="260">+ pressButton()</text>
+
+                  <!-- State interface -->
+                  <rect class="box" x="680" y="40" width="260" height="110"></rect>
+                  <text class="stereo" x="810" y="64" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="810" y="88" text-anchor="middle">SwitchState</text>
+                  <line class="sep" x1="680" y1="98" x2="940" y2="98"></line>
+                  <text class="body" x="700" y="122">+ pressSwitch(Remote): int</text>
+
+                  <!-- Concrete states -->
+                  <rect class="box" x="680" y="200" width="260" height="92"></rect>
+                  <text class="title" x="810" y="228" text-anchor="middle">OnState</text>
+                  <line class="sep" x1="680" y1="238" x2="940" y2="238"></line>
+                  <text class="body" x="700" y="262">+ pressSwitch(Remote): int</text>
+
+                  <rect class="box" x="680" y="320" width="260" height="92"></rect>
+                  <text class="title" x="810" y="348" text-anchor="middle">OffState</text>
+                  <line class="sep" x1="680" y1="358" x2="940" y2="358"></line>
+                  <text class="body" x="700" y="382">+ pressSwitch(Remote): int</text>
+
+                  <!-- Realization of states -->
+                  <path class="line dashed" d="M810 200 L810 150" marker-end="url(#triHollowST)"></path>
+                  <path class="line dashed" d="M810 320 L810 150" marker-end="url(#triHollowST)"></path>
+
+                  <!-- Dependencies -->
+                  <path class="line dashed" d="M220 216 L280 216" marker-end="url(#arrowOpenST)"></path>
+                  <text class="label" x="250" y="206" text-anchor="middle">uses</text>
+
+                  <path class="line dashed" d="M600 210 L680 110" marker-end="url(#arrowOpenST)"></path>
+                  <text class="label" x="640" y="158" text-anchor="middle">delegates to</text>
+                </svg>
+
+                <figcaption>
+                  This matches the remote example diagram structure from your behavioral slides.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- Strategy -->
+        <section id="strategy" class="pattern-card">
+          <div class="pattern-head">
+            <h3 class="pattern-name">B. Strategy</h3>
+            <div class="pill">Behavioral • Swap algorithms at runtime</div>
+          </div>
+
+          <div class="pattern-body">
+            <div class="callout">
+              <h4><span class="icon">D</span> Definition</h4>
+              <p>
+                Defines a family of algorithms, encapsulates each one, and makes them interchangeable.
+                You can select behavior dynamically at runtime.
+              </p>
+
+              <div class="two-col">
+                <div>
+                  <h4><span class="icon">W</span> When to use</h4>
+                  <ul>
+                    <li>You want multiple algorithms for the same task (sorting, payment, operations).</li>
+                    <li>You want to switch algorithms without changing client code.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4><span class="icon">E</span> Examples</h4>
+                  <ul>
+                    <li>Add/Sub/Mul strategies</li>
+                    <li>BubbleSort / QuickSort / InsertionSort</li>
+                  </ul>
+                </div>
+              </div>
+
+              <h4 style="margin-top:12px;"><span class="icon">{}</span> Mini code</h4>
+<pre><code>interface Strategy { int doAction(int a, int b); }
+
+class OpContext {
+  private Strategy strategy;
+  OpContext(Strategy s){ strategy = s; }
+  int applyStrategy(int a, int b){ return strategy.doAction(a, b); }
+}</code></pre>
+            </div>
+
+            <div class="diagram-wrap">
+              <figure>
+                <svg class="uml" viewBox="0 0 980 500" role="img" aria-label="Strategy UML">
+                  <defs>
+                    <marker id="triHollowSG" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+                      <path d="M0,6 L14,0 L14,12 Z" fill="white" stroke="#12233c" stroke-width="2.4"/>
+                    </marker>
+                    <marker id="arrowOpenSG" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+                      <path d="M0,8 L14,2 M0,8 L14,14" fill="none" stroke="#12233c" stroke-width="2.8" stroke-linecap="round"/>
+                    </marker>
+                  </defs>
+
+                  <!-- Strategy interface -->
+                  <rect class="box" x="380" y="30" width="260" height="105"></rect>
+                  <text class="stereo" x="510" y="54" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
+                  <text class="title" x="510" y="78" text-anchor="middle">Strategy</text>
+                  <line class="sep" x1="380" y1="88" x2="640" y2="88"></line>
+                  <text class="body" x="400" y="112">+ doAction(int a, int b): int</text>
+
+                  <!-- Context -->
+                  <rect class="box" x="90" y="170" width="280" height="140"></rect>
+                  <text class="title" x="230" y="200" text-anchor="middle">OpContext</text>
+                  <line class="sep" x1="90" y1="210" x2="370" y2="210"></line>
+                  <text class="body" x="110" y="236">- strategy: Strategy</text>
+                  <text class="body" x="110" y="258">+ applyStrategy(a,b): int</text>
+
+                  <!-- Client -->
+                  <rect class="box" x="90" y="350" width="280" height="90"></rect>
+                  <text class="title" x="230" y="382" text-anchor="middle">Client</text>
+                  <line class="sep" x1="90" y1="392" x2="370" y2="392"></line>
+                  <text class="body" x="110" y="418">+ main()</text>
+
+                  <!-- Concrete strategies -->
+                  <rect class="box" x="420" y="200" width="180" height="75"></rect>
+                  <text class="title" x="510" y="230" text-anchor="middle">StrategyAdd</text>
+
+                  <rect class="box" x="620" y="200" width="180" height="75"></rect>
+                  <text class="title" x="710" y="230" text-anchor="middle">StrategySub</text>
+
+                  <rect class="box" x="820" y="200" width="140" height="75"></rect>
+                  <text class="title" x="890" y="230" text-anchor="middle">StrategyMul</text>
+
+                  <!-- Realizations -->
+                  <path class="line dashed" d="M510 200 L510 140" marker-end="url(#triHollowSG)"></path>
+                  <path class="line dashed" d="M710 200 L710 140" marker-end="url(#triHollowSG)"></path>
+                  <path class="line dashed" d="M890 200 L890 140" marker-end="url(#triHollowSG)"></path>
+
+                  <!-- Dependencies -->
+                  <path class="line dashed" d="M370 240 L380 92" marker-end="url(#arrowOpenSG)"></path>
+                  <text class="label" x="392" y="175" transform="rotate(-58 392 175)">holds reference</text>
+
+                  <path class="line dashed" d="M230 350 L230 310" marker-end="url(#arrowOpenSG)"></path>
+                  <text class="label" x="245" y="332">calls</text>
+                </svg>
+
+                <figcaption>
+                  Strategy: context keeps a <code>Strategy</code> reference and can swap it to change behavior at runtime.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
 </body>
 </html>
