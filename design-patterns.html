@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Design Patterns Study Notes</title>
     <style>
-        /* --- DESIGN PATTERNS THEME (BLUE) ----- */
+        /* --- DESIGN PATTERNS THEME (BLUE) --- */
         :root {
             --bg-color: #f4f6f8;
             --text-color: #2c3e50;
             --primary-blue: #2980b9;
             --light-blue: #eaf2f8;
             --border-color: #bdc3c7;
+            --theory-bg: #fffbe6;
+            --theory-border: #f1c40f;
         }
 
         body {
@@ -56,6 +58,27 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
+        /* Theory Box */
+        .theory-section {
+            background-color: var(--theory-bg);
+            border: 1px solid var(--theory-border);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .uml-legend {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .uml-legend table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .uml-legend td { padding: 8px; border-bottom: 1px solid #444; vertical-align: top; }
+        .uml-legend strong { color: #f1c40f; }
 
         /* Pattern Cards */
         .pattern-card {
@@ -102,9 +125,7 @@
             border-radius: 4px;
         }
 
-        .key-points {
-            margin-top: 15px;
-        }
+        .key-points { margin-top: 15px; }
         .key-points li { margin-bottom: 8px; }
 
     </style>
@@ -114,12 +135,47 @@
     <div class="container">
         <a href="index.html" class="back-link">← Back to Syllabus Index</a>
         
-        <h1>Design Patterns (GoF)</h1>
-        <p>A standard solution to a common programming problem. Patterns ensure <strong>loose coupling</strong> and make code more flexible and reusable.</p>
-        
+        <h1>Software Design Patterns</h1>
+        <hr>
+
+        <!-- SECTION: THEORY -->
+        <div class="theory-section">
+            <h3>Core Theory</h3>
+            <p><strong>What is a Design Pattern?</strong> A standard solution to a common programming problem. It is a description or <strong>template</strong> that can be reused in many different situations.</p>
+            <ul>
+                <li><strong>Flexibility:</strong> Makes code more efficient and adaptable.</li>
+                <li><strong>Understandability:</strong> Increases the clarity of the program for other developers.</li>
+                <li><strong>Loose Coupling:</strong> Ensures components are not overly dependent on each other.</li>
+            </ul>
+            <p><strong>The "Gang of Four" (GoF):</strong> The originators who defined 23 patterns across 3 categories.</p>
+        </div>
+
+        <!-- SECTION: UML LEGEND -->
+        <div class="uml-legend">
+            <h3>UML Diagram Legend (Essential for Diagrams)</h3>
+            <table>
+                <tr>
+                    <td><strong>Solid Line + Hollow Triangle</strong></td>
+                    <td><strong>Inheritance / Generalization:</strong> "Class A extends Class B". Indicates a child class inheriting from a parent.</td>
+                </tr>
+                <tr>
+                    <td><strong>Dashed Line + Hollow Triangle</strong></td>
+                    <td><strong>Implementation / Realization:</strong> "Class A implements Interface B".</td>
+                </tr>
+                <tr>
+                    <td><strong>Dashed Line + Open Arrow</strong></td>
+                    <td><strong>Dependency:</strong> "Class A uses Class B". A change in B may affect A.</td>
+                </tr>
+                <tr>
+                    <td><strong>Solid Line + Diamond</strong></td>
+                    <td><strong>Composition / Aggregation:</strong> "Class A has a Class B". Indicates a part-whole relationship.</td>
+                </tr>
+            </table>
+        </div>
+
         <!-- ======================= CREATIONAL ======================= -->
         <h2>1. Creational Patterns</h2>
-        <p>Concerned with how objects are instantiated (created).</p>
+        <p>Concerned with <strong>how objects are instantiated</strong>. It abstracts the instantiation process.</p>
 
         <!-- FACTORY METHOD -->
         <div class="pattern-card">
@@ -128,14 +184,14 @@
                 Defines an interface for creating an object, but lets subclasses decide which class to instantiate.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: factory_kiosk.png -->
                 <img src="images/factory_kiosk.png" alt="Factory Method Kiosk Example" class="diagram-img">
             </div>
             <div class="key-points">
-                <strong>Key Takeaway:</strong>
+                <strong>Consequences:</strong>
                 <ul>
-                    <li>The client (Kiosk) doesn't know exactly what payment method is being created.</li>
-                    <li>It asks the `PaymentFactory`, which returns a `Cash`, `CreditCard`, or `Coupon` object.</li>
+                    <li>Removes the instantiation of actual implementation classes from client code.</li>
+                    <li>Makes code robust and easy to extend.</li>
+                    <li>Provides abstraction through inheritance.</li>
                 </ul>
             </div>
         </div>
@@ -144,17 +200,16 @@
         <div class="pattern-card">
             <h3>B. Abstract Factory</h3>
             <div class="definition">
-                Provide an interface for creating <strong>families</strong> of related or dependent objects (Factory of Factories).
+                Provide an encapsulation mechanism to a <strong>group of factories</strong>. Each factory is accessed through an abstract factory class.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: abstract_factory_vehicle.png -->
-                <img src="images/abstract_vehicle.png" alt="Abstract Factory Vehicle Example" class="diagram-img">
+                <img src="images/abstract_factory_vehicle.png" alt="Abstract Factory Vehicle Example" class="diagram-img">
             </div>
             <div class="key-points">
                 <strong>Key Takeaway:</strong>
                 <ul>
-                    <li>Used when you have multiple families (e.g., Honda Civic parts vs. Honda Accord parts).</li>
-                    <li>Ensures you don't mix parts (e.g., Putting a Civic Engine in an Accord).</li>
+                    <li>Known as a "Factory of Factories".</li>
+                    <li>Promotes consistency among related products (e.g., matching engines to specific wheels).</li>
                 </ul>
             </div>
         </div>
@@ -163,17 +218,16 @@
         <div class="pattern-card">
             <h3>C. Singleton</h3>
             <div class="definition">
-                Ensures a class has only <strong>one instance</strong> and provides a global point of access to it.
+                Ensures a class has <strong>only one instance</strong> and provides a global point of access to it.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: singleton_db.png -->
                 <img src="images/singleton_db.png" alt="Singleton Database Example" class="diagram-img">
             </div>
             <div class="key-points">
-                <strong>Key Takeaway:</strong>
+                <strong>Key Features:</strong>
                 <ul>
-                    <li>Note the private constructor <code>- DbConnection()</code>.</li>
-                    <li>The only way to get the object is the static method <code>+ getInstance()</code>.</li>
+                    <li>Facilitates <strong>Lazy Initialization</strong> (created only when needed).</li>
+                    <li>Uses a Private Constructor and a Static <code>getInstance()</code> method.</li>
                 </ul>
             </div>
         </div>
@@ -181,23 +235,22 @@
 
         <!-- ======================= STRUCTURAL ======================= -->
         <h2>2. Structural Patterns</h2>
-        <p>Concerned with how classes and objects are composed (combined).</p>
+        <p>Concerned with <strong>how classes and objects are combined</strong> to form larger structures.</p>
 
         <!-- ADAPTER -->
         <div class="pattern-card">
             <h3>A. Adapter Pattern</h3>
             <div class="definition">
-                Converts the interface of a class into another interface the clients expect. Bridges the gap between incompatible interfaces.
+                Helps communication between two <strong>incompatible interfaces</strong>. Resolves mismatches so pre-existing classes can be used.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: adapter_calculator.png -->
                 <img src="images/adapter_calculator.png" alt="Adapter Calculator Example" class="diagram-img">
             </div>
             <div class="key-points">
-                <strong>Key Takeaway:</strong>
+                <strong>Mechanism:</strong>
                 <ul>
-                    <li>The `Client` expects a Triangle, but the old `Calculator` only works with Rectangles.</li>
-                    <li>The `CalculatorAdapter` sits in the middle, translating Triangle inputs into Rectangle inputs.</li>
+                    <li>An Adapter class takes responsibility for resolving incompatibilities.</li>
+                    <li>The Client is unaware of the complexity of the conversion.</li>
                 </ul>
             </div>
         </div>
@@ -206,17 +259,16 @@
         <div class="pattern-card">
             <h3>B. Decorator Pattern</h3>
             <div class="definition">
-                Attaches additional responsibilities to an object dynamically. "Wraps" the object.
+                We cannot modify existing functionalities, but we can <strong>extend them</strong> by recursively wrapping objects.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: decorator_shape.png -->
                 <img src="images/decorator_shape.png" alt="Decorator Shape Example" class="diagram-img">
             </div>
             <div class="key-points">
-                <strong>Key Takeaway:</strong>
+                <strong>Philosophy:</strong>
                 <ul>
-                    <li>Notice how `PatternDecorator` and `ColorDecorator` both <em>extend</em> Shape and <em>contain</em> a Shape.</li>
-                    <li>This allows you to layer effects (e.g., a Red Circle with a Pattern).</li>
+                    <li>"Pay as you go" approach.</li>
+                    <li><strong>Open for extension, closed for modification.</strong></li>
                 </ul>
             </div>
         </div>
@@ -224,23 +276,22 @@
 
         <!-- ======================= BEHAVIORAL ======================= -->
         <h2>3. Behavioral Patterns</h2>
-        <p>Concerned with communication between objects.</p>
+        <p>Concerned with <strong>how objects communicate</strong> and the assignment of responsibilities between objects.</p>
 
         <!-- STATE -->
         <div class="pattern-card">
             <h3>A. State Pattern</h3>
             <div class="definition">
-                Allows an object to alter its behavior when its internal state changes.
+                Allows an object to alter its behavior when its <strong>internal state changes</strong>. Behavior is a function of its state.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: state_remote.png -->
                 <img src="images/state_remote.png" alt="State Pattern Remote Example" class="diagram-img">
             </div>
             <div class="key-points">
-                <strong>Key Takeaway:</strong>
+                <strong>Key Point:</strong>
                 <ul>
-                    <li>The `Remote` behaves differently depending on whether it is in `OnState` or `OffState`.</li>
-                    <li>Removes complex if/else statements.</li>
+                    <li>The object changes its behavior at <strong>run-time</strong>.</li>
+                    <li>Example: Traffic lights switching from Green to Yellow to Red.</li>
                 </ul>
             </div>
         </div>
@@ -249,31 +300,18 @@
         <div class="pattern-card">
             <h3>B. Strategy Pattern</h3>
             <div class="definition">
-                Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.
+                Defines a <strong>family of algorithms</strong> and makes them interchangeable. Selects behavior dynamically at runtime.
             </div>
             <div class="diagram-container">
-                <!-- RENAME YOUR IMAGE TO: strategy_sorting.png -->
-                <img src="images/strategy_sort.png" alt="Strategy Pattern Sorting Example" class="diagram-img">
+                <img src="images/strategy_sorting.png" alt="Strategy Pattern Sorting Example" class="diagram-img">
             </div>
             <div class="key-points">
-                <strong>Key Takeaway:</strong>
+                <strong>Key Point:</strong>
                 <ul>
-                    <li>The `Client` wants to sort, but doesn't care how.</li>
-                    <li>You can swap `BubbleSort`, `QuickSort`, or `InsertionSort` without breaking the client code.</li>
+                    <li>Encapsulates different algorithms (e.g., BubbleSort vs QuickSort) into separate strategy classes.</li>
+                    <li>Allows switching between methods without changing the client.</li>
                 </ul>
             </div>
-        </div>
-
-        <hr>
-
-        <div class="pattern-card" style="background-color: #fdf2e9; border-left: 5px solid #e67e22;">
-            <h3>Practice Scenarios for Exam</h3>
-            <ul>
-                <li><strong>Traffic Light:</strong> Use <em>State Pattern</em> (Red -> Green -> Yellow).</li>
-                <li><strong>Audio Player (mp3, wav, vlc):</strong> Use <em>Adapter Pattern</em> to make incompatible formats play.</li>
-                <li><strong>Sort Array:</strong> Use <em>Strategy Pattern</em> to swap algorithms.</li>
-                <li><strong>Website Builder / Presentation Software:</strong> Use <em>Decorator Pattern</em> to add features (fonts, colors) gradually.</li>
-            </ul>
         </div>
 
     </div>
