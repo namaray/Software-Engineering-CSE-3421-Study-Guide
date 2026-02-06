@@ -25,7 +25,7 @@
         }
 
         .container {
-            max-width: 950px;
+            max-width: 1100px; /* Widened for the bigger diagram */
             margin: 0 auto;
             background: white;
             padding: 50px;
@@ -120,6 +120,10 @@
         .critical-node .node-header { fill: #fadbd8; }
         .critical-text { fill: var(--critical-red); font-weight: bold; }
         
+        /* Finish Node */
+        .finish-node { fill: #fff; stroke: #333; stroke-width: 2; rx: 10; ry: 10; }
+        .finish-text { font-weight: bold; font-size: 14px; text-anchor: middle; }
+
         /* Text Colors */
         .text-es { fill: #2980b9; font-weight: bold; }
         .text-ef { fill: #2980b9; font-weight: bold; }
@@ -223,7 +227,7 @@
                 <li><strong>G (Merge):</strong> After E(7) AND F(10). <strong>Take MAX(7, 10) = 10</strong>. Finishes 10+3=13.</li>
                 <li><strong>H (Merge):</strong> After C(9) AND D(8). <strong>Take MAX(9, 8) = 9</strong>. Finishes 9+2=11.</li>
             </ul>
-            <p><strong>Project Duration:</strong> Max(13, 11) = <strong>13 Weeks</strong>.</p>
+            <p><strong>Project Duration:</strong> The FINISH node depends on G(13) and H(11). Max is <strong>13 Weeks</strong>.</p>
         </div>
 
         <div class="step-box">
@@ -248,7 +252,8 @@
         <h2>4. Complete Network Diagram</h2>
         
         <div style="overflow-x: auto; border: 1px solid #ddd; padding: 10px; background:white;">
-            <svg viewBox="0 0 800 400">
+            <!-- Increased Width for the END node -->
+            <svg viewBox="0 0 900 400">
                 <defs>
                     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
                         <polygon points="0 0, 10 3.5, 0 7" fill="#555" />
@@ -266,8 +271,12 @@
                 <line x1="420" y1="190" x2="550" y2="130" class="arrow" /> <!-- D->H -->
                 <line x1="420" y1="300" x2="550" y2="300" class="arrow" /> <!-- E->G -->
                 
-                <!-- CRITICAL PATH (F -> G) -->
+                <!-- Connections to FINISH Node -->
+                <line x1="670" y1="130" x2="780" y2="200" class="arrow" /> <!-- H->Finish -->
+                
+                <!-- CRITICAL PATH (F -> G -> Finish) -->
                 <path d="M 170 300 C 230 300, 480 300, 550 300" fill="none" class="critical-arrow" />
+                <path d="M 670 300 C 720 300, 720 220, 780 200" fill="none" class="critical-arrow" />
 
                 <!-- NODES -->
                 <!-- NODE A -->
@@ -372,6 +381,12 @@
                     <text x="20" y="15" text-anchor="middle" class="text-es">10</text><text x="60" y="15" text-anchor="middle">3</text><text x="100" y="15" text-anchor="middle" class="text-ef">13</text>
                     <text x="60" y="35" text-anchor="middle" class="text-name critical-text">G</text>
                     <text x="20" y="55" text-anchor="middle" class="text-ls">10</text><text x="60" y="55" text-anchor="middle" class="critical-text">0</text><text x="100" y="55" text-anchor="middle" class="text-lf">13</text>
+                </g>
+
+                <!-- FINISH NODE -->
+                <g transform="translate(780, 180)">
+                    <rect x="0" y="0" width="80" height="40" class="finish-node" />
+                    <text x="40" y="25" class="finish-text">FINISH</text>
                 </g>
 
             </svg>
